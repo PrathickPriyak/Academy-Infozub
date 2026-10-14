@@ -23,7 +23,6 @@ import {
   listCourses,
   listDurations,
   listInstructors,
-  listLevels,
   type CourseSort,
   type PriceFilter,
 } from "@/data/catalog";
@@ -61,7 +60,6 @@ export function CatalogClient() {
 
   const query = searchParams.get("q") ?? "";
   const category = searchParams.get("category") ?? "all";
-  const level = searchParams.get("level") ?? "all";
   const price = (searchParams.get("price") as PriceFilter | null) ?? "all";
   const durationFilter = searchParams.get("duration") ?? "all";
   const instructor = searchParams.get("instructor") ?? "all";
@@ -74,7 +72,6 @@ export function CatalogClient() {
   }, [query]);
 
   const categories = listCategories();
-  const levels = listLevels();
   const durations = listDurations();
   const instructors = listInstructors();
   const previewCourses = listCourses().slice(0, 5);
@@ -84,19 +81,17 @@ export function CatalogClient() {
       filterCourses({
         query,
         category,
-        level,
         price,
         duration: durationFilter,
         instructor,
         sort,
       }),
-    [query, category, level, price, durationFilter, instructor, sort],
+    [query, category, price, durationFilter, instructor, sort],
   );
 
   const activeFilterCount = countActiveFilters({
     query,
     category,
-    level,
     price,
     duration: durationFilter,
     instructor,
@@ -136,13 +131,11 @@ export function CatalogClient() {
 
   const filterPanelProps = {
     category,
-    level,
     price,
     durationFilter,
     instructor,
     sort,
     categories,
-    levels,
     durations,
     instructors,
     updateParams,
@@ -170,7 +163,7 @@ export function CatalogClient() {
               <h1 className="font-display mt-2 text-4xl tracking-tight sm:text-5xl">Courses</h1>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/85 sm:text-base">
                 Browse all {catalog.courses.length} published Infozub Digital Academy courses. Filter by skill area,
-                level, and access — then open a course for modules and enrollment.
+                price, and access — then open a course for modules and enrollment.
               </p>
               <p className="mt-4 flex items-center gap-2 text-sm font-medium text-white/75" aria-live="polite">
                 {pending ? (
@@ -296,12 +289,6 @@ export function CatalogClient() {
                 <ActiveChip
                   label={categories.find((item) => item.slug === category)?.name ?? category}
                   onClear={() => updateParams({ category: "all" })}
-                />
-              ) : null}
-              {level !== "all" ? (
-                <ActiveChip
-                  label={level.charAt(0) + level.slice(1).toLowerCase()}
-                  onClear={() => updateParams({ level: "all" })}
                 />
               ) : null}
               {price !== "all" ? (
@@ -442,13 +429,11 @@ export function CatalogClient() {
 
 function FilterPanel({
   category,
-  level,
   price,
   durationFilter,
   instructor,
   sort,
   categories,
-  levels,
   durations,
   instructors,
   updateParams,
@@ -457,13 +442,11 @@ function FilterPanel({
   sortId,
 }: {
   category: string;
-  level: string;
   price: PriceFilter;
   durationFilter: string;
   instructor: string;
   sort: CourseSort;
   categories: ReturnType<typeof listCategories>;
-  levels: ReturnType<typeof listLevels>;
   durations: ReturnType<typeof listDurations>;
   instructors: ReturnType<typeof listInstructors>;
   updateParams: (next: Record<string, string | null>) => void;
@@ -486,24 +469,6 @@ function FilterPanel({
             active={category === item.slug}
             onClick={() => updateParams({ category: item.slug })}
             label={item.name}
-            reduceMotion={reduceMotion}
-          />
-        ))}
-      </FilterGroup>
-
-      <FilterGroup legend="Level">
-        <FilterChip
-          active={level === "all"}
-          onClick={() => updateParams({ level: "all" })}
-          label="All levels"
-          reduceMotion={reduceMotion}
-        />
-        {levels.map((value) => (
-          <FilterChip
-            key={value}
-            active={level === value}
-            onClick={() => updateParams({ level: value })}
-            label={value.charAt(0) + value.slice(1).toLowerCase()}
             reduceMotion={reduceMotion}
           />
         ))}
