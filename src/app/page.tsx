@@ -3,10 +3,8 @@ import dynamic from "next/dynamic";
 
 import { AudienceGrid } from "@/components/marketing/audience-grid";
 import { CategoryGrid } from "@/components/marketing/category-grid";
-import { FeaturedLearning } from "@/components/marketing/featured-learning";
 import { HomeHero } from "@/components/marketing/home-hero";
 import { PopularCourses } from "@/components/marketing/popular-courses";
-import { StatsBand } from "@/components/marketing/stats-band";
 import { WhyInfozub } from "@/components/marketing/why-infozub";
 import { JsonLd } from "@/components/seo/json-ld";
 import { listCategories, listCourses } from "@/data/catalog";
@@ -54,11 +52,9 @@ export default function HomePage() {
   return (
     <>
       <HomeHero />
-      <StatsBand />
       <PopularCourses />
       <CategoryGrid />
       <WhyInfozub />
-      <FeaturedLearning />
       <AudienceGrid />
       <InstructorSpotlight />
       <Testimonials />
