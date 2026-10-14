@@ -57,9 +57,23 @@ async function appendToGoogleSheetWebhook(row: InquiryRow, webhookUrl: string): 
     redirect: "follow",
   });
 
+  const raw = await response.text().catch(() => "");
   if (!response.ok) {
-    const detail = await response.text().catch(() => "");
-    throw new Error(detail || `Google Sheets webhook failed (${response.status}).`);
+    throw new Error(raw || `Google Sheets webhook failed (${response.status}).`);
+  }
+
+  // Apps Script returns JSON { ok: true } after the redirect hop.
+  try {
+    const payload = JSON.parse(raw) as { ok?: boolean; error?: string };
+    if (payload.ok === false) {
+      throw new Error(payload.error || "Google Sheets webhook reported a failure.");
+    }
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      // Non-JSON success body is still acceptable if HTTP 200.
+      return;
+    }
+    throw error;
   }
 }
 
