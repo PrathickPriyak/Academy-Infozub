@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ContactModal } from "@/components/marketing/contact-modal";
 import { HeroFloatingTools } from "@/components/marketing/hero-floating-tools";
 import { HeroInteractiveBackdrop } from "@/components/marketing/hero-interactive-backdrop";
+import { HeroTypewriter } from "@/components/marketing/hero-typewriter";
 import { CourseSearch } from "@/components/site/course-search";
 import { Button } from "@/components/ui/button";
 import { site } from "@/data/site";
@@ -72,14 +73,17 @@ export function HomeHero() {
             {site.name}
           </motion.h1>
 
-          <motion.p
-            className="mt-4 text-xl font-medium tracking-tight text-[#f0b27a] sm:mt-5 sm:text-2xl"
+          <motion.div
+            className="mt-4 sm:mt-5"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={t(duration.base, 0.06)}
           >
-            {site.tagline}
-          </motion.p>
+            <HeroTypewriter
+              phrases={site.heroTypewriterPhrases}
+              className="min-h-[1.35em] text-xl font-medium tracking-tight text-[#f0b27a] sm:text-2xl"
+            />
+          </motion.div>
 
           <motion.p
             className="mt-4 max-w-lg text-base leading-relaxed text-white/90 sm:mt-5 sm:text-lg"

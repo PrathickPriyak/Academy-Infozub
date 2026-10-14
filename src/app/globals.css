@@ -203,6 +203,21 @@
   }
 }
 
+@keyframes hero-caret-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@utility animate-hero-caret {
+  animation: hero-caret-blink 1s steps(1, end) infinite;
+}
+
 @utility animate-overlay-in {
   animation: ui-fade-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -223,7 +238,8 @@
   .animate-overlay-in,
   .animate-overlay-out,
   .animate-dialog-in,
-  .animate-dialog-out {
+  .animate-dialog-out,
+  .animate-hero-caret {
     animation: none !important;
   }
 }
