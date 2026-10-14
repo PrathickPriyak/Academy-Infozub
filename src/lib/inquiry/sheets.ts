@@ -77,15 +77,24 @@ async function appendToGoogleSheetWebhook(row: InquiryRow, webhookUrl: string): 
   }
 }
 
+/** Infozub academy inquiry sheet webhook (Apps Script). Env var overrides this. */
+const DEFAULT_SHEETS_WEBHOOK =
+  "https://script.google.com/macros/s/AKfycbx1p_0Hm4hlljUTOifEsZEp_ecTo-sOfhqY0XEeCGOv_hd2B0MyULZClYRt7YJ389wR8g/exec";
+
 export async function appendInquiry(row: InquiryRow): Promise<{ destination: "google-sheets" | "local-excel" }> {
-  const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL?.trim();
+  const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL?.trim() || DEFAULT_SHEETS_WEBHOOK;
 
   if (webhookUrl) {
-    await appendToGoogleSheetWebhook(row, webhookUrl);
-    return { destination: "google-sheets" };
+    try {
+      await appendToGoogleSheetWebhook(row, webhookUrl);
+      return { destination: "google-sheets" };
+    } catch (error) {
+      // Keep local Excel as a safety net in development if the sheet webhook fails.
+      if (process.env.NODE_ENV === "production") throw error;
+      console.error("Google Sheets webhook failed; writing local Excel fallback.", error);
+    }
   }
 
-  // Local Excel fallback for development / preview when no webhook is configured.
   await appendToLocalExcel(row);
   return { destination: "local-excel" };
 }
