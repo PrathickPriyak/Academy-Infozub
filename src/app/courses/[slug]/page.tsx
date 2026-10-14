@@ -11,6 +11,8 @@ import {
   courseReviews,
   learningOutcomesFromCourse,
 } from "@/lib/courses/presenters";
+import { formatPrice } from "@/lib/courses/present";
+import { getShopifyPriceMap } from "@/lib/shopify/prices";
 import { courseJsonLd, defaultOgImage } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -46,21 +48,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CourseDetailPage({ params }: Props) {
   const { slug } = await params;
-  const course = getCourseBySlug(slug);
-  if (!course) notFound();
+  const base = getCourseBySlug(slug);
+  if (!base) notFound();
+
+  const priceMap = await getShopifyPriceMap();
+  const live = priceMap[base.slug];
+  const course = live ? { ...base, price: live.price } : base;
 
   const meta = courseMeta(course);
   const outcomes = learningOutcomesFromCourse(course);
   const requirements = courseRequirements(course);
   const faqs = courseFaqs(course);
   const reviews = courseReviews();
+  const priceLabel = live ? formatPrice(live.price, live.currency) : meta.price;
 
   return (
     <>
       <CourseDetailView
         course={course}
         category={meta.category}
-        price={meta.price}
+        price={priceLabel}
         level={meta.level}
         instructorName={meta.instructorName}
         instructorTitle={meta.instructorTitle}

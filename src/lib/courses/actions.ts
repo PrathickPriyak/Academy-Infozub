@@ -55,13 +55,17 @@ export async function saveCourse(
     price: formData.get("price"),
     enrollmentUrl: formData.get("enrollmentUrl"),
     published: formData.get("published") === "on",
+    shopifyProductId: String(formData.get("shopifyProductId") ?? "").trim() || undefined,
   });
   if (!parsed.success) {
     return fail("Check the course fields.", fieldErrors(parsed.error));
   }
 
   const id = String(formData.get("id") ?? "");
-  const data = parsed.data;
+  const data = {
+    ...parsed.data,
+    shopifyProductId: parsed.data.shopifyProductId,
+  };
   try {
     if (id) {
       await db.course.update({ where: { id }, data });

@@ -139,9 +139,11 @@ export function filterCourses(options: {
   duration?: string;
   instructor?: string;
   sort?: CourseSort;
+  /** Optional pre-priced course list (e.g. Shopify overlays). */
+  courses?: CatalogCourse[];
 }): CatalogCourse[] {
   const query = options.query?.trim().toLowerCase() ?? "";
-  let results = listCourses().filter((course) => {
+  let results = (options.courses ?? listCourses()).filter((course) => {
     if (options.category && options.category !== "all" && course.category !== options.category) {
       return false;
     }

@@ -47,6 +47,9 @@ model Course {
   currency         String          @default("INR")
   enrollmentUrl    String
   published        Boolean         @default(false)
+  shopifyProductId String?
+  shopifyVariantId String?
+  shopifySyncedAt  DateTime?
   categoryId       String
   category         Category        @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   instructorId     String
@@ -62,6 +65,17 @@ model Course {
   @@index([categoryId])
   @@index([instructorId])
   @@index([published])
+  @@index([shopifyProductId])
+}
+
+/** Singleton Shopify Admin API connection used to sync course prices. */
+model ShopifySettings {
+  id           String    @id @default("default")
+  storeDomain  String
+  accessToken  String
+  lastSyncedAt DateTime?
+  lastError    String?
+  updatedAt    DateTime  @updatedAt
 }
 
 model Module {

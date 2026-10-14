@@ -41,7 +41,10 @@ export default async function AdminDashboardPage() {
       <header className="border-border border-b">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
           <p className="font-display text-lg tracking-tight">Knowledge dashboard</p>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="secondary">
+              <Link href="/admin/shopify">Shopify prices</Link>
+            </Button>
             <Button asChild variant="outline">
               <Link href="/admin/knowledge">Manage knowledge</Link>
             </Button>
