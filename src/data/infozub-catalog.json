@@ -82,14 +82,7 @@
           "description": "Create industry-level designs including social media posters, cinematic posters, product ads, and print-ready materials. Build a strong portfolio and gain practical confidence."
         }
       ],
-      "gallery": [
-        "https://academy.infozub.com/wp-content/uploads/2026/01/Dune-graphic_ida.jpeg",
-        "https://academy.infozub.com/wp-content/uploads/2026/01/Juice-graphi_ida.jpeg",
-        "https://academy.infozub.com/wp-content/uploads/2026/01/Samurai-graphic_ida.jpeg",
-        "https://academy.infozub.com/wp-content/uploads/2026/01/shoe-graphic_ida.jpeg",
-        "https://academy.infozub.com/wp-content/uploads/2026/01/winter-coming-graphic_ida.jpeg",
-        "https://academy.infozub.com/wp-content/uploads/2026/01/GDMP-Certification_ida.jpg"
-      ]
+      "gallery": []
     },
     {
       "category": "video",
@@ -140,10 +133,7 @@
           "description": "The page covers AI audio cleanup, Generative Extend, Higgsfield, and Magnific AI."
         }
       ],
-      "gallery": [
-        "https://academy.infozub.com/wp-content/uploads/2026/07/AI-Powered-Video-editing_APP_IDA.jpeg",
-        "https://academy.infozub.com/wp-content/uploads/2026/07/APRCertificate_Ida.jpeg"
-      ]
+      "gallery": []
     },
     {
       "category": "web",
@@ -174,10 +164,7 @@
           "description": "Learn to host your sites using Netlify and GitHub like a pro."
         }
       ],
-      "gallery": [
-        "https://academy.infozub.com/wp-content/uploads/2026/03/10Web_AI_IDA.png",
-        "https://academy.infozub.com/wp-content/uploads/2026/03/Ai-Website-Builder-Certificate_IDA.png"
-      ]
+      "gallery": []
     },
     {
       "category": "business",
@@ -236,11 +223,7 @@
           "description": "Transform your business from survival mode to scalable success. Learn growth strategies like franchising, partnerships, and automation. Avoid common growth mistakes and build a long-term sustainable business."
         }
       ],
-      "gallery": [
-        "https://academy.infozub.com/wp-content/uploads/2026/05/Anuthama_BSF_IDA.jpeg",
-        "https://academy.infozub.com/wp-content/uploads/2026/05/Aravind-Dhandapani_BSF_IDA.jpeg",
-        "https://academy.infozub.com/wp-content/uploads/2026/05/Audithyavignesh_BSF_IDA.jpeg"
-      ]
+      "gallery": []
     },
     {
       "category": "design",
@@ -279,9 +262,7 @@
           "description": "Explore additional tips, shortcuts, and advanced design ideas to improve your Canva skills. These lessons help you work faster and create more polished designs."
         }
       ],
-      "gallery": [
-        "https://academy.infozub.com/wp-content/uploads/2026/01/Canva-CErtificate-IDA.jpeg"
-      ]
+      "gallery": []
     },
     {
       "category": "marketing",
@@ -340,11 +321,7 @@
           "description": "Understand how CPC and Quality Score affect cost. Learn to control budget and increase profit using bidding strategies and the Auction Insights Tool."
         }
       ],
-      "gallery": [
-        "https://academy.infozub.com/wp-content/uploads/2026/04/Display_Campiagns_IDA.png",
-        "https://academy.infozub.com/wp-content/uploads/2026/04/Google-Ads_Master-Course_IDA.jpeg",
-        "https://academy.infozub.com/wp-content/uploads/2026/04/Google_ADS_IDA.png"
-      ]
+      "gallery": []
     },
     {
       "category": "career",
@@ -427,14 +404,7 @@
           "description": "Access a curated list of common interview questions with sample answers. Use them as a reference to prepare and practice confidently."
         }
       ],
-      "gallery": [
-        "https://academy.infozub.com/wp-content/uploads/2025/10/Audithya-scaled.jpg",
-        "https://academy.infozub.com/wp-content/uploads/2025/10/Dharshani--scaled.jpg",
-        "https://academy.infozub.com/wp-content/uploads/2025/10/Iswarya--scaled.jpg",
-        "https://academy.infozub.com/wp-content/uploads/2025/10/Lambert-Rizario--scaled.jpg",
-        "https://academy.infozub.com/wp-content/uploads/2025/10/MARTIN--scaled.jpg",
-        "https://academy.infozub.com/wp-content/uploads/2025/10/MadhuBala-scaled.jpg"
-      ]
+      "gallery": []
     },
     {
       "category": "video",
@@ -489,9 +459,7 @@
           "description": "Get started with simple video editing using the Film Maker App. You will learn basic trimming, effects, text, music, and transitions to create engaging videos with ease."
         }
       ],
-      "gallery": [
-        "https://academy.infozub.com/wp-content/uploads/2025/01/MAVE_certification.jpeg"
-      ]
+      "gallery": []
     },
     {
       "category": "marketing",
@@ -499,7 +467,7 @@
       "slug": "search-engine-optimisation",
       "shortDescription": "Become an SEO master with Infozub Digital Academy comprehensive course. Learn cutting-edge strategies, boost rankings, and drive organic traffic like a pro. Enroll now in our SEO Master course.",
       "description": "Become an SEO master with Infozub Digital Academy comprehensive course. Learn cutting-edge strategies, boost rankings, and drive organic traffic like a pro. Enroll now in our SEO Master course. This is a published Infozub Digital Academy course. Learning access is delivered through the courses.infozub.com learning platform after purchase.",
-      "thumbnail": "https://academy.infozub.com/wp-content/uploads/2023/10/IMAGE.jpg",
+      "thumbnail": "/infozub-mark.png",
       "level": "BEGINNER",
       "duration": "12 months access and 15+ hours of content",
       "price": 0,
@@ -593,9 +561,7 @@
           "description": "Use ChatGPT, Gemini, Grok and similar tools to ideate, script and write content at scale. Build your own AI-assisted workflow for ads, captions, emails, and client reports."
         }
       ],
-      "gallery": [
-        "https://academy.infozub.com/wp-content/uploads/2025/01/Social-media-marketing_Certification.jpg"
-      ]
+      "gallery": []
     },
     {
       "category": "web",
@@ -658,9 +624,7 @@
           "description": "Learn WooCommerce basics, from installation to essential settings and features. Create simple and advanced product types suited for different business models. Integrate Razorpay and prepare a fully functional e-commerce site on your hosting."
         }
       ],
-      "gallery": [
-        "https://academy.infozub.com/wp-content/uploads/2025/01/WWD_Certification.jpeg"
-      ]
+      "gallery": []
     }
   ],
   "platform": [
@@ -726,41 +690,37 @@
     }
   ],
   "media": {
-    "logoBlack": "https://academy.infozub.com/wp-content/uploads/2025/12/IDA_LOGO_black.png",
-    "brandMark": "https://academy.infozub.com/wp-content/uploads/2023/10/IDA_2000x2000-JPG.jpg",
-    "instructorPortrait": "https://academy.infozub.com/wp-content/uploads/2023/07/logesh_ida_profile.jpg",
-    "team": "https://academy.infozub.com/wp-content/uploads/2025/01/IDA_Team.png",
-    "hero": "https://academy.infozub.com/wp-content/uploads/2023/10/IDA_2000x2000-JPG.jpg",
-    "press": [
-      "https://academy.infozub.com/wp-content/uploads/2023/07/BV-magazine.png",
-      "https://academy.infozub.com/wp-content/uploads/2023/07/CEOMagazine.png",
-      "https://academy.infozub.com/wp-content/uploads/2023/07/startupcitysilicon.png"
-    ],
+    "logoBlack": "/infozub-logo.png",
+    "brandMark": "/infozub-mark.png",
+    "instructorPortrait": "/infozub-mark.png",
+    "team": "",
+    "hero": "/infozub-mark.png",
+    "press": [],
     "highlights": [],
     "audiences": [
       {
         "title": "Digital marketers",
-        "src": "https://academy.infozub.com/wp-content/uploads/2026/04/Google-ads_IDA.png"
+        "src": "/course-thumbnails/google-ads.webp"
       },
       {
         "title": "Traditional marketers",
-        "src": "https://academy.infozub.com/wp-content/uploads/2026/01/Social-media-marketing-master-course-INFOZUB-Digital-Academy.jpeg"
+        "src": "/course-thumbnails/social-media-marketing.webp"
       },
       {
         "title": "Students / Freshers",
-        "src": "https://academy.infozub.com/wp-content/uploads/2023/10/IDA_students.jpg"
+        "src": "/course-thumbnails/canva-master-course.webp"
       },
       {
         "title": "Business Owners",
-        "src": "https://academy.infozub.com/wp-content/uploads/2026/05/BSF_IDA_Course.png"
+        "src": "/course-thumbnails/business-success-formula.webp"
       },
       {
         "title": "Freelancers",
-        "src": "https://academy.infozub.com/wp-content/uploads/2023/10/IDA_freelancers.jpg"
+        "src": "/course-thumbnails/web-design.webp"
       },
       {
         "title": "Anyone learning",
-        "src": "https://academy.infozub.com/wp-content/uploads/2025/01/IDA_Team.png"
+        "src": "/course-thumbnails/ai-website-builder-mastery.webp"
       }
     ],
     "testimonials": {}

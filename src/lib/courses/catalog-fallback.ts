@@ -1,6 +1,7 @@
 import type { CourseLevel } from "@prisma/client";
 
 import catalog from "@/data/infozub-catalog.json";
+import { localCourseThumbnail } from "@/data/course-thumbnails";
 
 import type { CourseRecord } from "./queries";
 
@@ -25,7 +26,7 @@ function toCourseRecord(course: CatalogCourse): CourseRecord {
     title: course.title,
     shortDescription: course.shortDescription,
     description: course.description,
-    thumbnail: course.thumbnail,
+    thumbnail: localCourseThumbnail(course.slug, course.thumbnail),
     level: asLevel(course.level),
     duration: course.duration,
     price: course.price,
