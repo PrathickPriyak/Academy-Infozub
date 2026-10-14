@@ -28,7 +28,9 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   const courseCount = listCourses().length;
-  const portrait = academyMedia.instructorPortrait;
+  const brandMark = academyMedia.brandMark;
+  const press = academyMedia.press.filter(Boolean);
+  const teamPhoto = academyMedia.team.trim();
 
   return (
     <>
@@ -57,13 +59,13 @@ export default function AboutPage() {
             </div>
           </Reveal>
           <Reveal delay={0.08}>
-            <div className="border-border relative aspect-[4/3] overflow-hidden rounded-[2rem] border shadow-hero">
+            <div className="border-border relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[2rem] border bg-card shadow-hero">
               <Image
-                src={portrait}
-                alt={`${founder.name}, ${founder.title}`}
-                fill
-                className="object-cover object-top"
-                sizes="(max-width: 1024px) 100vw, 40vw"
+                src={brandMark}
+                alt={site.name}
+                width={280}
+                height={280}
+                className="h-auto w-[55%] max-w-[16rem] object-contain"
                 priority
               />
             </div>
@@ -130,8 +132,7 @@ export default function AboutPage() {
             <p className="text-primary text-sm font-semibold tracking-[0.16em] uppercase">Learning approach</p>
             <h2 className="font-display mt-3 text-3xl tracking-tight sm:text-4xl">How Infozub trains learners</h2>
             <p className="text-muted-foreground mt-3 text-base leading-relaxed">
-              Course highlights published on academy.infozub.com — strategies, certificates, community, and flexible
-              access.
+              Strategies, certificates, community, and flexible access shaped by real digital marketing work.
             </p>
           </Reveal>
           <RevealStagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -155,7 +156,7 @@ export default function AboutPage() {
             <p className="text-primary text-sm font-semibold tracking-[0.16em] uppercase">Experience</p>
             <h2 className="font-display mt-3 text-3xl tracking-tight">Published impact metrics</h2>
             <p className="text-muted-foreground mt-3 text-base leading-relaxed">
-              Figures published on the Infozub Digital Academy site for INFOZUB’s digital marketing experience.
+              Figures published for INFOZUB’s digital marketing experience.
             </p>
           </Reveal>
           <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -192,50 +193,51 @@ export default function AboutPage() {
         </Container>
       </Section>
 
-      <Section spacing="lg" className="bg-card/40">
-        <Container>
-          <Reveal className="mx-auto max-w-2xl text-center">
-            <p className="text-primary text-sm font-semibold tracking-[0.16em] uppercase">In the press</p>
-            <h2 className="font-display mt-3 text-3xl tracking-tight">Published coverage</h2>
-            <p className="text-muted-foreground mt-3 text-base leading-relaxed">
-              Features and mentions published on the Infozub Academy about page.
-            </p>
-          </Reveal>
-          <RevealStagger className="mt-10 grid gap-4 sm:grid-cols-3">
-            {academyMedia.press.map((src) => (
-              <RevealItem key={src}>
-                <div className="border-border bg-card relative flex aspect-[5/3] items-center justify-center overflow-hidden rounded-2xl border p-6 shadow-soft">
-                  <Image
-                    src={src}
-                    alt="Press feature from Infozub Academy about page"
-                    width={280}
-                    height={160}
-                    className="h-auto max-h-28 w-auto max-w-full object-contain"
-                  />
-                </div>
-              </RevealItem>
-            ))}
-          </RevealStagger>
-        </Container>
-      </Section>
+      {press.length > 0 ? (
+        <Section spacing="lg" className="bg-card/40">
+          <Container>
+            <Reveal className="mx-auto max-w-2xl text-center">
+              <p className="text-primary text-sm font-semibold tracking-[0.16em] uppercase">In the press</p>
+              <h2 className="font-display mt-3 text-3xl tracking-tight">Published coverage</h2>
+            </Reveal>
+            <RevealStagger className="mt-10 grid gap-4 sm:grid-cols-3">
+              {press.map((src) => (
+                <RevealItem key={src}>
+                  <div className="border-border bg-card relative flex aspect-[5/3] items-center justify-center overflow-hidden rounded-2xl border p-6 shadow-soft">
+                    <Image
+                      src={src}
+                      alt="Press feature"
+                      width={280}
+                      height={160}
+                      className="h-auto max-h-28 w-auto max-w-full object-contain"
+                    />
+                  </div>
+                </RevealItem>
+              ))}
+            </RevealStagger>
+          </Container>
+        </Section>
+      ) : null}
 
-      <Section spacing="lg">
-        <Container>
-          <Reveal className="mx-auto max-w-2xl text-center">
-            <p className="text-primary text-sm font-semibold tracking-[0.16em] uppercase">Team</p>
-            <h2 className="font-display mt-3 text-3xl tracking-tight">The academy team</h2>
-          </Reveal>
-          <Reveal className="border-border relative mx-auto mt-10 aspect-[21/9] max-w-5xl overflow-hidden rounded-[2rem] border shadow-lift">
-            <Image
-              src={academyMedia.team}
-              alt="Infozub Digital Academy team"
-              fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 960px"
-            />
-          </Reveal>
-        </Container>
-      </Section>
+      {teamPhoto ? (
+        <Section spacing="lg">
+          <Container>
+            <Reveal className="mx-auto max-w-2xl text-center">
+              <p className="text-primary text-sm font-semibold tracking-[0.16em] uppercase">Team</p>
+              <h2 className="font-display mt-3 text-3xl tracking-tight">The academy team</h2>
+            </Reveal>
+            <Reveal className="border-border relative mx-auto mt-10 aspect-[21/9] max-w-5xl overflow-hidden rounded-[2rem] border shadow-lift">
+              <Image
+                src={teamPhoto}
+                alt="Infozub Digital Academy team"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 960px"
+              />
+            </Reveal>
+          </Container>
+        </Section>
+      ) : null}
 
       <Section spacing="lg">
         <Container>

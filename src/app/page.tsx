@@ -11,11 +11,6 @@ import { listCategories, listCourses } from "@/data/catalog";
 import { site } from "@/data/site";
 import { defaultOgImage, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 
-const InstructorSpotlight = dynamic(() =>
-  import("@/components/marketing/instructor-spotlight").then((mod) => ({
-    default: mod.InstructorSpotlight,
-  })),
-);
 const Testimonials = dynamic(() =>
   import("@/components/marketing/testimonials").then((mod) => ({
     default: mod.Testimonials,
@@ -56,7 +51,6 @@ export default function HomePage() {
       <CategoryGrid />
       <WhyInfozub />
       <AudienceGrid />
-      <InstructorSpotlight />
       <Testimonials />
       <FinalCta />
       <JsonLd data={organizationJsonLd()} />

@@ -16,7 +16,14 @@ export const courseInputSchema = z.object({
   slug,
   description: requiredText("Description", 4000),
   shortDescription: requiredText("Short description", 280),
-  thumbnail: z.string().trim().url("Thumbnail must be a valid URL."),
+  thumbnail: z
+    .string()
+    .trim()
+    .min(1, "Thumbnail is required.")
+    .refine(
+      (value) => value.startsWith("/") || /^https?:\/\//i.test(value),
+      "Thumbnail must be a local path or a valid URL.",
+    ),
   categoryId: z.string().trim().min(1, "Choose a category."),
   instructorId: z.string().trim().min(1, "Choose an instructor."),
   level: z.nativeEnum(CourseLevel),

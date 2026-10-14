@@ -1,6 +1,6 @@
 import catalogJson from "@/data/infozub-catalog.json";
 
-/** Published academy.infozub.com media referenced by marketing surfaces. */
+/** Local marketing media from `/public` (bundled catalog). No remote academy fetches. */
 export const academyMedia = catalogJson.media;
 
 export function testimonialPhoto(name: string): string | undefined {
