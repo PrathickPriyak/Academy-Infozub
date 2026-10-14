@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { LazyAssistantWidget } from "@/components/assistant/lazy-assistant-widget";
+import { LazyInquiryWidget } from "@/components/inquiry/lazy-inquiry-widget";
 
 import { SiteFooter } from "./site-footer";
 import { SiteHeader } from "./site-header";
@@ -19,7 +19,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         {children}
       </main>
       <SiteFooter />
-      <LazyAssistantWidget />
+      <LazyInquiryWidget />
     </div>
   );
 }
