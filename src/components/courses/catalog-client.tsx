@@ -22,7 +22,6 @@ import {
   listCategories,
   listCourses,
   listDurations,
-  listInstructors,
   type CourseSort,
   type PriceFilter,
 } from "@/data/catalog";
@@ -62,7 +61,6 @@ export function CatalogClient() {
   const category = searchParams.get("category") ?? "all";
   const price = (searchParams.get("price") as PriceFilter | null) ?? "all";
   const durationFilter = searchParams.get("duration") ?? "all";
-  const instructor = searchParams.get("instructor") ?? "all";
   const sort = (searchParams.get("sort") as CourseSort | null) ?? "popular";
 
   const [searchDraft, setSearchDraft] = useState(query);
@@ -73,7 +71,6 @@ export function CatalogClient() {
 
   const categories = listCategories();
   const durations = listDurations();
-  const instructors = listInstructors();
   const previewCourses = listCourses().slice(0, 5);
 
   const courses = useMemo(
@@ -83,10 +80,9 @@ export function CatalogClient() {
         category,
         price,
         duration: durationFilter,
-        instructor,
         sort,
       }),
-    [query, category, price, durationFilter, instructor, sort],
+    [query, category, price, durationFilter, sort],
   );
 
   const activeFilterCount = countActiveFilters({
@@ -94,7 +90,6 @@ export function CatalogClient() {
     category,
     price,
     duration: durationFilter,
-    instructor,
   });
 
   function updateParams(next: Record<string, string | null>) {
@@ -133,11 +128,9 @@ export function CatalogClient() {
     category,
     price,
     durationFilter,
-    instructor,
     sort,
     categories,
     durations,
-    instructors,
     updateParams,
     resetFilters,
     reduceMotion: !!reduceMotion,
@@ -303,9 +296,6 @@ export function CatalogClient() {
                   onClear={() => updateParams({ duration: "all" })}
                 />
               ) : null}
-              {instructor !== "all" ? (
-                <ActiveChip label={instructor} onClear={() => updateParams({ instructor: "all" })} />
-              ) : null}
               <button
                 type="button"
                 className="text-primary inline-flex min-h-11 items-center text-sm font-semibold underline-offset-4 hover:underline"
@@ -431,11 +421,9 @@ function FilterPanel({
   category,
   price,
   durationFilter,
-  instructor,
   sort,
   categories,
   durations,
-  instructors,
   updateParams,
   resetFilters,
   reduceMotion,
@@ -444,11 +432,9 @@ function FilterPanel({
   category: string;
   price: PriceFilter;
   durationFilter: string;
-  instructor: string;
   sort: CourseSort;
   categories: ReturnType<typeof listCategories>;
   durations: ReturnType<typeof listDurations>;
-  instructors: ReturnType<typeof listInstructors>;
   updateParams: (next: Record<string, string | null>) => void;
   resetFilters: () => void;
   reduceMotion: boolean;
@@ -513,24 +499,6 @@ function FilterPanel({
           ))}
         </select>
       </div>
-
-      <FilterGroup legend="Instructor">
-        <FilterChip
-          active={instructor === "all"}
-          onClick={() => updateParams({ instructor: "all" })}
-          label="All"
-          reduceMotion={reduceMotion}
-        />
-        {instructors.map((name) => (
-          <FilterChip
-            key={name}
-            active={instructor === name}
-            onClick={() => updateParams({ instructor: name })}
-            label={name}
-            reduceMotion={reduceMotion}
-          />
-        ))}
-      </FilterGroup>
 
       <div>
         <label htmlFor={sortId} className="text-foreground mb-2 block text-sm font-semibold">

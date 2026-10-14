@@ -7,7 +7,6 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { HoverMedia } from "@/components/ui/hover-media";
 import {
-  catalog,
   categoryNameForCourse,
   durationLabel,
   formatCoursePrice,
@@ -70,10 +69,6 @@ export function CourseCard({
           </div>
 
           <div className="text-muted-foreground mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium">
-            <span>{catalog.instructor.name}</span>
-            <span aria-hidden className="text-border">
-              ·
-            </span>
             <span>{levelLabel(course.level)}</span>
             <span aria-hidden className="text-border">
               ·

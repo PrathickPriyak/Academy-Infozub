@@ -62,9 +62,6 @@ export default async function CourseDetailPage({ params }: Props) {
         category={meta.category}
         price={meta.price}
         level={meta.level}
-        instructorName={meta.instructorName}
-        instructorTitle={meta.instructorTitle}
-        instructorBio={meta.instructorBio}
         outcomes={outcomes}
         requirements={requirements}
         faqs={faqs}

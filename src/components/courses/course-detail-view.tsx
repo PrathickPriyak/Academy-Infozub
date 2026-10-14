@@ -1,8 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { CheckCircle2, Clock3, Layers3, UserRound } from "lucide-react";
-import Image from "next/image";
+import { CheckCircle2, Clock3, Layers3 } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -16,7 +15,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { HoverMedia } from "@/components/ui/hover-media";
 import type { CatalogCourse } from "@/data/catalog";
-import { academyMedia } from "@/data/media";
 import { refundSummary } from "@/data/site";
 import type { CourseFaq } from "@/lib/courses/presenters";
 import { duration, easeOutPremium } from "@/lib/motion";
@@ -28,9 +26,6 @@ export function CourseDetailView({
   category,
   price,
   level,
-  instructorName,
-  instructorTitle,
-  instructorBio,
   outcomes,
   requirements,
   faqs,
@@ -40,9 +35,6 @@ export function CourseDetailView({
   category: string;
   price: string;
   level: string;
-  instructorName: string;
-  instructorTitle: string;
-  instructorBio: string;
   outcomes: string[];
   requirements: string[];
   faqs: CourseFaq[];
@@ -107,8 +99,7 @@ export function CourseDetailView({
                 {course.shortDescription}
               </p>
 
-              <dl className="border-border/80 mt-8 grid gap-x-6 gap-y-4 border-y py-5 sm:grid-cols-2">
-                <MetaItem icon={<UserRound className="size-4" aria-hidden />} label="Instructor" value={instructorName} />
+              <dl className="border-border/80 mt-8 grid gap-x-6 gap-y-4 border-y py-5 sm:grid-cols-3">
                 <MetaItem icon={<Clock3 className="size-4" aria-hidden />} label="Duration" value={course.duration} />
                 <MetaItem icon={<Layers3 className="size-4" aria-hidden />} label="Modules" value={String(course.modules.length)} />
                 <MetaItem icon={<CheckCircle2 className="size-4" aria-hidden />} label="Level" value={level} />
@@ -223,33 +214,6 @@ export function CourseDetailView({
 
             <Reveal>
               <section>
-                <h2 className="font-display text-3xl tracking-tight">Instructor</h2>
-                <div className="border-border bg-card mt-5 overflow-hidden rounded-[1.75rem] border shadow-soft">
-                  <div className="grid sm:grid-cols-[8rem_1fr]">
-                    <div className="relative min-h-40 bg-muted sm:min-h-full">
-                      <Image
-                        src={academyMedia.instructorPortrait}
-                        alt={`${instructorName}, ${instructorTitle}`}
-                        fill
-                        className="object-cover"
-                        sizes="160px"
-                      />
-                    </div>
-                    <div className="p-6">
-                      <h3 className="font-display text-2xl tracking-tight">{instructorName}</h3>
-                      <p className="text-primary mt-1 text-sm font-semibold">{instructorTitle}</p>
-                      <p className="text-muted-foreground mt-4 text-sm leading-relaxed">{instructorBio}</p>
-                      <Button asChild variant="outline" className="mt-5">
-                        <Link href="/about">About the academy</Link>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </Reveal>
-
-            <Reveal>
-              <section>
                 <h2 className="font-display text-3xl tracking-tight">Reviews</h2>
                 <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
                   Testimonials published on academy.infozub.com. Course-specific star ratings are not available in the
@@ -313,7 +277,6 @@ export function CourseDetailView({
               <ul className="text-muted-foreground mt-5 space-y-2.5 border-t border-border/70 pt-4 text-sm">
                 <li>{level} level</li>
                 <li>{course.modules.length} published modules</li>
-                <li>Instructor: {instructorName}</li>
               </ul>
               <Button asChild className="mt-5 w-full" size="lg">
                 <a href={course.enrollmentUrl} target="_blank" rel="noreferrer">
