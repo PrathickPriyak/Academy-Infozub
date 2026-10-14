@@ -20,14 +20,41 @@ export default async function AdminDashboardPage() {
     redirect("/admin/login");
   }
 
+  const emptyStats = {
+    courses: 0,
+    modules: 0,
+    lessons: 0,
+    faqs: 0,
+    indexedDocuments: 0,
+    lastKnowledgeUpdate: null as Date | null,
+    conversations: 0,
+    fallbackQuestions: 0,
+  };
+  const emptyAnalytics = {
+    conversations: 0,
+    questionsToday: 0,
+    fallbackQuestions: 0,
+    contactClicks: 0,
+    mostAsked: [] as Awaited<ReturnType<typeof getAnalyticsReport>>["mostAsked"],
+    mostDiscussed: [] as Awaited<ReturnType<typeof getAnalyticsReport>>["mostDiscussed"],
+    questionsByDay: [] as Awaited<ReturnType<typeof getAnalyticsReport>>["questionsByDay"],
+    outcomes: [] as Awaited<ReturnType<typeof getAnalyticsReport>>["outcomes"],
+  };
+
   const [courses, stats, analytics] = await Promise.all([
     listAllCourses(),
-    getKnowledgeStats(),
-    getAnalyticsReport(),
+    getKnowledgeStats().catch((error) => {
+      console.error("Admin knowledge stats unavailable.", error);
+      return emptyStats;
+    }),
+    getAnalyticsReport().catch((error) => {
+      console.error("Admin analytics unavailable.", error);
+      return emptyAnalytics;
+    }),
   ]);
   const published = courses.filter((course) => course.published).length;
   const metrics = [
-    ["Total courses", stats.courses],
+    ["Total courses", stats.courses || courses.length],
     ["Total modules", stats.modules],
     ["Total lessons", stats.lessons],
     ["Total FAQs", stats.faqs],
@@ -41,7 +68,10 @@ export default async function AdminDashboardPage() {
       <header className="border-border border-b">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
           <p className="font-display text-lg tracking-tight">Knowledge dashboard</p>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="secondary">
+              <Link href="/admin/shopify">Shopify prices</Link>
+            </Button>
             <Button asChild variant="outline">
               <Link href="/admin/knowledge">Manage knowledge</Link>
             </Button>

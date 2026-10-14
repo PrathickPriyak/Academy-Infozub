@@ -24,6 +24,12 @@ export const courseInputSchema = z.object({
   price: z.coerce.number().int().min(0, "Price cannot be negative.").max(1_000_000),
   enrollmentUrl: z.string().trim().url("Enrollment URL must be a valid URL."),
   published: z.boolean(),
+  shopifyProductId: z
+    .string()
+    .trim()
+    .max(64)
+    .optional()
+    .transform((value) => (value && value.length > 0 ? value : null)),
 });
 
 export const moduleInputSchema = z.object({

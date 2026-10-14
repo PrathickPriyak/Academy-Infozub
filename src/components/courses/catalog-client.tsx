@@ -68,16 +68,40 @@ export function CatalogClient() {
   const sort = (searchParams.get("sort") as CourseSort | null) ?? "popular";
 
   const [searchDraft, setSearchDraft] = useState(query);
+  const [shopifyPrices, setShopifyPrices] = useState<Record<string, { price: number; currency: string }>>({});
 
   useEffect(() => {
     setSearchDraft(query);
   }, [query]);
 
+  useEffect(() => {
+    let cancelled = false;
+    void fetch("/api/shopify/prices")
+      .then((response) => response.json())
+      .then((payload: { ok?: boolean; prices?: Record<string, { price: number; currency: string }> }) => {
+        if (!cancelled && payload.prices) setShopifyPrices(payload.prices);
+      })
+      .catch(() => {
+        // Keep catalog prices when Shopify is unavailable.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const categories = listCategories();
   const levels = listLevels();
   const durations = listDurations();
   const instructors = listInstructors();
-  const previewCourses = listCourses().slice(0, 5);
+  const pricedCatalog = useMemo(
+    () =>
+      listCourses().map((course) => {
+        const live = shopifyPrices[course.slug];
+        return live ? { ...course, price: live.price } : course;
+      }),
+    [shopifyPrices],
+  );
+  const previewCourses = pricedCatalog.slice(0, 5);
 
   const courses = useMemo(
     () =>
@@ -89,8 +113,9 @@ export function CatalogClient() {
         duration: durationFilter,
         instructor,
         sort,
+        courses: pricedCatalog,
       }),
-    [query, category, level, price, durationFilter, instructor, sort],
+    [query, category, level, price, durationFilter, instructor, sort, pricedCatalog],
   );
 
   const activeFilterCount = countActiveFilters({

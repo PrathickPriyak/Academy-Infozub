@@ -32,6 +32,7 @@ export function CourseForm({
     price: number;
     enrollmentUrl: string;
     published: boolean;
+    shopifyProductId?: string | null;
   };
 }) {
   const [state, action, pending] = useActionState(saveCourse, initial);
@@ -140,8 +141,14 @@ export function CourseForm({
         type="number"
         min={0}
         defaultValue={course?.price ?? 0}
-        placeholder="Price in INR"
+        placeholder="Price in INR (overridden by Shopify when synced)"
         aria-label="Price"
+      />
+      <Input
+        name="shopifyProductId"
+        defaultValue={course?.shopifyProductId ?? ""}
+        placeholder="Shopify product ID (optional)"
+        aria-label="Shopify product ID"
       />
       <Input
         name="enrollmentUrl"

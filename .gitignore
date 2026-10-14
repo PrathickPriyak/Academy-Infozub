@@ -44,3 +44,6 @@ next-env.d.ts
 # Local inquiry spreadsheet fallback
 data/inquiries.xlsx
 data/inquiries.csv
+
+# Local Shopify credentials (use env vars on Vercel)
+data/shopify-settings.json
