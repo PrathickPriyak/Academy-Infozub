@@ -17,7 +17,7 @@ import {
 } from "@/data/catalog";
 import { cn } from "@/lib/utils";
 
-import { Reveal, RevealItem, RevealStagger } from "./reveal";
+import { Reveal } from "./reveal";
 
 function TrainingCard({
   course,
@@ -74,8 +74,7 @@ function TrainingCard({
 }
 
 export function PopularCourses() {
-  const categories = listCategories();
-  const allCourses = listCourses();
+  const allCourses = useMemo(() => listCourses(), []);
   // Default to All so the 4-column grid stays full; category tabs still filter.
   const [activeCategory, setActiveCategory] = useState("all");
 
@@ -87,12 +86,15 @@ export function PopularCourses() {
     return pool.slice(0, 12);
   }, [activeCategory, allCourses]);
 
-  const filterTabs = [
-    { slug: "all", name: "All" },
-    ...categories.filter((category) =>
-      allCourses.some((course) => course.category === category.slug),
-    ),
-  ];
+  const filterTabs = useMemo(
+    () => [
+      { slug: "all", name: "All" },
+      ...listCategories().filter((category) =>
+        allCourses.some((course) => course.category === category.slug),
+      ),
+    ],
+    [allCourses],
+  );
 
   return (
     <Section spacing="lg" className="bg-muted/40">
@@ -130,13 +132,17 @@ export function PopularCourses() {
             No courses in this category yet.
           </p>
         ) : (
-          <RevealStagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          // Plain grid (not RevealStagger): one-shot whileInView left remounted
+          // filter results stuck at opacity 0 after the first category change.
+          <div
+            key={activeCategory}
+            className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            aria-live="polite"
+          >
             {filtered.map((course, index) => (
-              <RevealItem key={course.slug}>
-                <TrainingCard course={course} popular={index < 2} />
-              </RevealItem>
+              <TrainingCard key={course.slug} course={course} popular={index < 2} />
             ))}
-          </RevealStagger>
+          </div>
         )}
 
         <Reveal className="mt-10 flex justify-center" delay={0.05}>
