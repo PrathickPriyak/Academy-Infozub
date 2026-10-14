@@ -52,60 +52,61 @@ export default function ContactPage() {
       </section>
 
       <Section spacing="lg" className="bg-background">
-        <Container>
-          <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-16 xl:gap-20">
-            <Reveal className="space-y-10">
-              <div className="grid gap-6 sm:grid-cols-2">
+        <Container className="max-w-7xl">
+          <div className="grid items-start gap-14 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.1fr)] lg:gap-20">
+            <Reveal className="space-y-12">
+              <div className="space-y-5">
                 <a
                   href={`mailto:${site.email}`}
-                  className="group border-border/80 bg-card hover:border-primary/30 block rounded-2xl border p-6 transition-colors sm:p-7"
+                  className="group border-border/80 bg-card hover:border-primary/30 flex gap-5 rounded-2xl border p-6 transition-colors sm:p-8"
                 >
-                  <span className="bg-secondary text-primary inline-flex size-11 items-center justify-center rounded-xl">
+                  <span className="bg-secondary text-primary inline-flex size-12 shrink-0 items-center justify-center rounded-xl">
                     <Mail className="size-5" aria-hidden />
                   </span>
-                  <p className="text-muted-foreground mt-5 text-xs font-semibold tracking-[0.14em] uppercase">
-                    Email
-                  </p>
-                  <p className="text-foreground mt-2 text-lg font-semibold tracking-tight break-all group-hover:text-primary">
-                    {site.email}
-                  </p>
-                  <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-                    For login or LMS access issues, you can also use logesh@infozub.com.
-                  </p>
+                  <span className="min-w-0">
+                    <p className="text-muted-foreground text-xs font-semibold tracking-[0.14em] uppercase">
+                      Email
+                    </p>
+                    <p className="text-foreground mt-1.5 text-xl font-semibold tracking-tight break-all group-hover:text-primary">
+                      {site.email}
+                    </p>
+                    <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+                      For login or LMS access issues, you can also use logesh@infozub.com.
+                    </p>
+                  </span>
                 </a>
 
                 <a
                   href={site.phoneHref}
-                  className="group border-border/80 bg-card hover:border-primary/30 block rounded-2xl border p-6 transition-colors sm:p-7"
+                  className="group border-border/80 bg-card hover:border-primary/30 flex gap-5 rounded-2xl border p-6 transition-colors sm:p-8"
                 >
-                  <span className="bg-secondary text-primary inline-flex size-11 items-center justify-center rounded-xl">
+                  <span className="bg-secondary text-primary inline-flex size-12 shrink-0 items-center justify-center rounded-xl">
                     <Phone className="size-5" aria-hidden />
                   </span>
-                  <p className="text-muted-foreground mt-5 text-xs font-semibold tracking-[0.14em] uppercase">
-                    Phone
-                  </p>
-                  <p className="text-foreground mt-2 text-lg font-semibold tracking-tight group-hover:text-primary">
-                    {site.phone}
-                  </p>
-                  <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-                    Call during academy hours for enrollment and course guidance.
-                  </p>
+                  <span className="min-w-0">
+                    <p className="text-muted-foreground text-xs font-semibold tracking-[0.14em] uppercase">
+                      Phone
+                    </p>
+                    <p className="text-foreground mt-1.5 text-xl font-semibold tracking-tight group-hover:text-primary">
+                      {site.phone}
+                    </p>
+                    <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+                      Call during academy hours for enrollment and course guidance.
+                    </p>
+                  </span>
                 </a>
               </div>
 
               <div>
-                <div className="mb-5 flex items-center gap-2">
+                <div className="mb-6 flex items-center gap-2">
                   <MapPin className="text-primary size-4 shrink-0" aria-hidden />
                   <h2 className="text-sm font-semibold tracking-[0.14em] uppercase">Office addresses</h2>
                 </div>
-                <div className="grid gap-5 sm:grid-cols-2">
+                <div className="grid gap-5">
                   {[site.offices.registered, site.offices.corporate].map((office) => (
-                    <div
-                      key={office.label}
-                      className="border-border/80 bg-card rounded-2xl border p-6 sm:min-h-[11rem] sm:p-7"
-                    >
+                    <div key={office.label} className="border-border/80 bg-card rounded-2xl border p-6 sm:p-8">
                       <h3 className="font-display text-xl tracking-tight">{office.label}</h3>
-                      <p className="text-muted-foreground mt-4 space-y-1 text-sm leading-relaxed">
+                      <p className="text-muted-foreground mt-4 space-y-1.5 text-sm leading-relaxed sm:text-[0.95rem]">
                         {office.lines.map((line) => (
                           <span key={line} className="block">
                             {line}
