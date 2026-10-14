@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 
 import { AudienceGrid } from "@/components/marketing/audience-grid";
-import { CategoryGrid } from "@/components/marketing/category-grid";
 import { HomeHero } from "@/components/marketing/home-hero";
 import { PopularCourses } from "@/components/marketing/popular-courses";
 import { WhyInfozub } from "@/components/marketing/why-infozub";
 import { JsonLd } from "@/components/seo/json-ld";
-import { listCategories, listCourses } from "@/data/catalog";
+import { listCourses } from "@/data/catalog";
 import { site } from "@/data/site";
 import { defaultOgImage, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 
@@ -23,7 +22,7 @@ const FinalCta = dynamic(() =>
 );
 
 const title = `${site.name} · ${site.tagline}`;
-const description = `${site.description} Browse ${listCourses().length} published courses across ${listCategories().length} skill categories.`;
+const description = `${site.description} Browse ${listCourses().length} published courses.`;
 
 export const metadata: Metadata = {
   title: { absolute: title },
@@ -48,7 +47,6 @@ export default function HomePage() {
     <>
       <HomeHero />
       <PopularCourses />
-      <CategoryGrid />
       <WhyInfozub />
       <AudienceGrid />
       <Testimonials />

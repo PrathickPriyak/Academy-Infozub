@@ -30,7 +30,6 @@ export default function AboutPage() {
   const courseCount = listCourses().length;
   const brandMark = academyMedia.brandMark;
   const press = academyMedia.press.filter(Boolean);
-  const teamPhoto = academyMedia.team.trim();
 
   return (
     <>
@@ -215,26 +214,6 @@ export default function AboutPage() {
                 </RevealItem>
               ))}
             </RevealStagger>
-          </Container>
-        </Section>
-      ) : null}
-
-      {teamPhoto ? (
-        <Section spacing="lg">
-          <Container>
-            <Reveal className="mx-auto max-w-2xl text-center">
-              <p className="text-primary text-sm font-semibold tracking-[0.16em] uppercase">Team</p>
-              <h2 className="font-display mt-3 text-3xl tracking-tight">The academy team</h2>
-            </Reveal>
-            <Reveal className="border-border relative mx-auto mt-10 aspect-[21/9] max-w-5xl overflow-hidden rounded-[2rem] border shadow-lift">
-              <Image
-                src={teamPhoto}
-                alt="Infozub Digital Academy team"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 960px"
-              />
-            </Reveal>
           </Container>
         </Section>
       ) : null}
