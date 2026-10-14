@@ -5,7 +5,7 @@ import { ArrowRight, Search } from "lucide-react";
 import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
 
-import { AssistantWidget } from "@/components/assistant/assistant-widget";
+import { InquiryWidget } from "@/components/inquiry/inquiry-widget";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { SiteFooter } from "@/components/site/site-footer";
@@ -277,7 +277,7 @@ export function HomePage({ courses }: { courses: CourseHighlight[] }) {
         </Section>
       </main>
       <SiteFooter />
-      <AssistantWidget />
+      <InquiryWidget />
     </div>
   );
 }

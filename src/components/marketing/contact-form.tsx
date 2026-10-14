@@ -25,7 +25,17 @@ function validate(fields: Record<FieldKey, string>): FieldErrors {
   return errors;
 }
 
-export function ContactForm() {
+export function ContactForm({
+  compact = false,
+  defaultSubject = "",
+  onSuccess,
+  className,
+}: {
+  compact?: boolean;
+  defaultSubject?: string;
+  onSuccess?: () => void;
+  className?: string;
+}) {
   const formId = useId();
   const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<Status>("idle");
@@ -79,6 +89,7 @@ export function ContactForm() {
       setStatus("success");
       setFieldErrors({});
       form.reset();
+      onSuccess?.();
     } catch (err) {
       setStatus("error");
       setError(
@@ -92,20 +103,28 @@ export function ContactForm() {
   if (status === "success") {
     return (
       <div
-        className="bg-card rounded-[1.5rem] p-6 shadow-[0_1px_2px_rgb(11_31_42/0.04),0_12px_32px_rgb(11_31_42/0.06)] ring-1 ring-border/80 sm:p-8"
+        className={cn(
+          "bg-card",
+          compact
+            ? "space-y-3 py-2"
+            : "rounded-[1.5rem] p-6 shadow-[0_1px_2px_rgb(11_31_42/0.04),0_12px_32px_rgb(11_31_42/0.06)] ring-1 ring-border/80 sm:p-8",
+          className,
+        )}
         role="status"
         aria-live="polite"
       >
         <p className="text-primary text-sm font-semibold tracking-[0.16em] uppercase">Message ready</p>
-        <h2 className="font-display mt-2 text-2xl tracking-tight">Your email client should open next</h2>
-        <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
+        <h2 className={cn("font-display tracking-tight", compact ? "text-xl" : "mt-2 text-2xl")}>
+          Your email client should open next
+        </h2>
+        <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
           We drafted your note to {site.email}. If nothing opens, email us directly or call{" "}
           <a href={site.phoneHref} className="text-foreground font-semibold underline-offset-4 hover:underline">
             {site.phone}
           </a>
           .
         </p>
-        <Button type="button" className="mt-6" onClick={() => setStatus("idle")}>
+        <Button type="button" className="mt-4" size={compact ? "default" : "lg"} onClick={() => setStatus("idle")}>
           Send another message
         </Button>
       </div>
@@ -116,18 +135,25 @@ export function ContactForm() {
     <form
       ref={formRef}
       onSubmit={onSubmit}
-      className="bg-card space-y-5 rounded-[1.5rem] p-6 shadow-[0_1px_2px_rgb(11_31_42/0.04),0_12px_32px_rgb(11_31_42/0.06)] ring-1 ring-border/80 sm:p-8"
+      className={cn(
+        compact ? "space-y-3" : "space-y-4",
+        compact
+          ? "bg-transparent p-0 shadow-none ring-0"
+          : "bg-card space-y-5 rounded-[1.5rem] p-6 shadow-[0_1px_2px_rgb(11_31_42/0.04),0_12px_32px_rgb(11_31_42/0.06)] ring-1 ring-border/80 sm:p-8",
+        className,
+      )}
       noValidate
     >
-      <div>
-        <h2 className="font-display text-2xl tracking-tight">Send a message</h2>
-        <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-          Tell us about courses, enrollment, or partnerships. No API keys are used in the browser — messages open via
-          your email client to {site.email}.
-        </p>
-      </div>
+      {compact ? null : (
+        <div>
+          <h2 className="font-display text-2xl tracking-tight">Send a message</h2>
+          <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+            Tell us about courses, enrollment, or partnerships. Messages open via your email client to {site.email}.
+          </p>
+        </div>
+      )}
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className={cn("grid sm:grid-cols-2", compact ? "gap-3" : "gap-4")}>
         <Field
           id={`${formId}-name`}
           label="Name"
@@ -161,7 +187,7 @@ export function ContactForm() {
         />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className={cn("grid sm:grid-cols-2", compact ? "gap-3" : "gap-4")}>
         <Field
           id={`${formId}-phone`}
           label="Phone"
@@ -187,6 +213,7 @@ export function ContactForm() {
               id={`${formId}-subject`}
               name="subject"
               required
+              defaultValue={defaultSubject}
               aria-invalid={Boolean(fieldErrors.subject)}
               aria-describedby={fieldErrors.subject ? `${formId}-subject-error` : undefined}
             />
@@ -202,7 +229,7 @@ export function ContactForm() {
           <Textarea
             id={`${formId}-message`}
             name="message"
-            rows={5}
+            rows={compact ? 3 : 5}
             required
             aria-invalid={Boolean(fieldErrors.message)}
             aria-describedby={fieldErrors.message ? `${formId}-message-error` : undefined}
@@ -216,7 +243,12 @@ export function ContactForm() {
         </p>
       ) : null}
 
-      <Button type="submit" disabled={status === "loading"} className="w-full sm:w-auto" size="lg">
+      <Button
+        type="submit"
+        disabled={status === "loading"}
+        className={cn("w-full", !compact && "sm:w-auto")}
+        size={compact ? "default" : "lg"}
+      >
         {status === "loading" ? "Preparing message…" : "Send message"}
       </Button>
     </form>

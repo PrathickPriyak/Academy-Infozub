@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
+import { ContactModal } from "@/components/marketing/contact-modal";
 import { Button } from "@/components/ui/button";
 import { refundSummary, site } from "@/data/site";
 import { duration, easeOutPremium } from "@/lib/motion";
@@ -38,14 +39,16 @@ export function FinalCta() {
                 <Button asChild size="default" variant="secondary">
                   <Link href="/courses">Explore Courses</Link>
                 </Button>
-                <Button
-                  asChild
-                  size="default"
-                  variant="outline"
-                  className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
-                >
-                  <Link href="/contact">Contact Us</Link>
-                </Button>
+                <ContactModal defaultSubject="Program guidance">
+                  <Button
+                    type="button"
+                    size="default"
+                    variant="outline"
+                    className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
+                  >
+                    Contact Us
+                  </Button>
+                </ContactModal>
               </div>
             </div>
             <p className="text-primary-foreground/75 relative mt-4 text-xs sm:mt-5">

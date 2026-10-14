@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
+import { ContactModal } from "@/components/marketing/contact-modal";
 import { CourseSearch } from "@/components/site/course-search";
 import { Button } from "@/components/ui/button";
 import { academyMedia } from "@/data/media";
@@ -86,14 +87,16 @@ export function HomeHero() {
             <Button asChild size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90 sm:w-auto">
               <Link href="/courses">Explore Courses</Link>
             </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="w-full border-white/40 bg-white/5 text-white hover:bg-white/12 hover:text-white sm:w-auto"
-            >
-              <Link href="/contact">Contact Us</Link>
-            </Button>
+            <ContactModal defaultSubject="General inquiry">
+              <Button
+                type="button"
+                size="lg"
+                variant="outline"
+                className="w-full border-white/40 bg-white/5 text-white hover:bg-white/12 hover:text-white sm:w-auto"
+              >
+                Contact Us
+              </Button>
+            </ContactModal>
           </motion.div>
 
           <motion.div

@@ -378,14 +378,10 @@ export function CatalogClient() {
 
               <p className="text-muted-foreground mt-8 text-sm">
                 Looking for help choosing a program?{" "}
-                <Link href="/chat" className="text-primary font-semibold underline-offset-4 hover:underline">
-                  Ask the Academy Assistant
-                </Link>{" "}
-                or{" "}
                 <Link href="/contact" className="text-primary font-semibold underline-offset-4 hover:underline">
-                  contact Infozub
-                </Link>
-                .
+                  Contact Infozub
+                </Link>{" "}
+                with your details and the academy team will guide you.
               </p>
             </div>
           </div>
