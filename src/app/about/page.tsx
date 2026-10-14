@@ -221,24 +221,6 @@ export default function AboutPage() {
 
       <Section spacing="lg">
         <Container>
-          <Reveal className="mx-auto max-w-2xl text-center">
-            <p className="text-primary text-sm font-semibold tracking-[0.16em] uppercase">Team</p>
-            <h2 className="font-display mt-3 text-3xl tracking-tight">The academy team</h2>
-          </Reveal>
-          <Reveal className="border-border relative mx-auto mt-10 aspect-[21/9] max-w-5xl overflow-hidden rounded-[2rem] border shadow-lift">
-            <Image
-              src={academyMedia.team}
-              alt="Infozub Digital Academy team"
-              fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 960px"
-            />
-          </Reveal>
-        </Container>
-      </Section>
-
-      <Section spacing="lg">
-        <Container>
           <div className="border-border from-primary to-primary/90 relative overflow-hidden rounded-[2rem] bg-gradient-to-br px-6 py-12 text-primary-foreground shadow-hero sm:px-12">
             <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="max-w-xl">
