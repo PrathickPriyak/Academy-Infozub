@@ -20,14 +20,41 @@ export default async function AdminDashboardPage() {
     redirect("/admin/login");
   }
 
+  const emptyStats = {
+    courses: 0,
+    modules: 0,
+    lessons: 0,
+    faqs: 0,
+    indexedDocuments: 0,
+    lastKnowledgeUpdate: null as Date | null,
+    conversations: 0,
+    fallbackQuestions: 0,
+  };
+  const emptyAnalytics = {
+    conversations: 0,
+    questionsToday: 0,
+    fallbackQuestions: 0,
+    contactClicks: 0,
+    mostAsked: [] as Awaited<ReturnType<typeof getAnalyticsReport>>["mostAsked"],
+    mostDiscussed: [] as Awaited<ReturnType<typeof getAnalyticsReport>>["mostDiscussed"],
+    questionsByDay: [] as Awaited<ReturnType<typeof getAnalyticsReport>>["questionsByDay"],
+    outcomes: [] as Awaited<ReturnType<typeof getAnalyticsReport>>["outcomes"],
+  };
+
   const [courses, stats, analytics] = await Promise.all([
     listAllCourses(),
-    getKnowledgeStats(),
-    getAnalyticsReport(),
+    getKnowledgeStats().catch((error) => {
+      console.error("Admin knowledge stats unavailable.", error);
+      return emptyStats;
+    }),
+    getAnalyticsReport().catch((error) => {
+      console.error("Admin analytics unavailable.", error);
+      return emptyAnalytics;
+    }),
   ]);
   const published = courses.filter((course) => course.published).length;
   const metrics = [
-    ["Total courses", stats.courses],
+    ["Total courses", stats.courses || courses.length],
     ["Total modules", stats.modules],
     ["Total lessons", stats.lessons],
     ["Total FAQs", stats.faqs],

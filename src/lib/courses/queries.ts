@@ -25,10 +25,19 @@ export async function listPublishedCourses(): Promise<CourseRecord[]> {
 }
 
 export async function listAllCourses(): Promise<CourseRecord[]> {
-  return db.course.findMany({
-    include: courseInclude,
-    orderBy: { updatedAt: "desc" },
-  });
+  if (!process.env.DATABASE_URL) {
+    return listCatalogCoursesFallback();
+  }
+
+  try {
+    return await db.course.findMany({
+      include: courseInclude,
+      orderBy: { updatedAt: "desc" },
+    });
+  } catch (error) {
+    console.error("Falling back to bundled catalog for admin list; database query failed.", error);
+    return listCatalogCoursesFallback();
+  }
 }
 
 export async function getCourseBySlug(slug: string): Promise<CourseRecord | null> {
