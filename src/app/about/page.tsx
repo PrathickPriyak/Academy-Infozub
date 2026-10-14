@@ -6,7 +6,7 @@ import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { Reveal, RevealItem, RevealStagger } from "@/components/marketing/reveal";
 import { Button } from "@/components/ui/button";
-import { catalog, listCourses } from "@/data/catalog";
+import { listCourses } from "@/data/catalog";
 import { academyMedia } from "@/data/media";
 import { aboutContent, audiences, founder, highlights, site } from "@/data/site";
 
@@ -233,43 +233,6 @@ export default function AboutPage() {
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 960px"
             />
-          </Reveal>
-        </Container>
-      </Section>
-
-      <Section spacing="lg" className="bg-card/40">
-        <Container>
-          <Reveal className="mx-auto max-w-2xl text-center">
-            <p className="text-primary text-sm font-semibold tracking-[0.16em] uppercase">Instructor</p>
-            <h2 className="font-display mt-3 text-3xl tracking-tight">Meet the founder</h2>
-          </Reveal>
-          <Reveal className="border-border bg-card mx-auto mt-10 max-w-4xl overflow-hidden rounded-[2rem] border shadow-lift">
-            <div className="grid md:grid-cols-[0.85fr_1.15fr]">
-              <div className="relative min-h-72 md:min-h-full">
-                <Image
-                  src={portrait}
-                  alt={`${founder.name}, ${founder.title}`}
-                  fill
-                  className="object-cover object-top"
-                  sizes="(max-width: 768px) 100vw, 40vw"
-                />
-              </div>
-              <div className="flex flex-col justify-center gap-4 p-6 sm:p-8">
-                <div>
-                  <h3 className="font-display text-3xl tracking-tight">{founder.name}</h3>
-                  <p className="text-primary mt-1 text-sm font-semibold">{founder.title}</p>
-                </div>
-                <p className="text-muted-foreground text-sm leading-relaxed">{catalog.instructor.bio}</p>
-                <div className="flex flex-wrap gap-3">
-                  <Button asChild>
-                    <Link href="/courses">View courses</Link>
-                  </Button>
-                  <Button asChild variant="outline">
-                    <Link href="/contact">Contact Us</Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
           </Reveal>
         </Container>
       </Section>
