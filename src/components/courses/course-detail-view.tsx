@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { CourseCertificate } from "@/components/courses/course-certificate";
 import { CourseFaqList } from "@/components/courses/course-faq";
 import { CourseGallery } from "@/components/courses/course-gallery";
 import { ModuleList } from "@/components/courses/module-list";
@@ -16,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { HoverMedia } from "@/components/ui/hover-media";
 import type { CatalogCourse } from "@/data/catalog";
+import { getCourseCertificate } from "@/data/certificates";
 import { academyMedia } from "@/data/media";
 import { refundSummary } from "@/data/site";
 import type { CourseFaq } from "@/lib/courses/presenters";
@@ -49,6 +51,7 @@ export function CourseDetailView({
   reviews: readonly Review[];
 }) {
   const reduceMotion = useReducedMotion();
+  const certificate = getCourseCertificate(course.slug);
 
   return (
     <>
@@ -197,6 +200,12 @@ export function CourseDetailView({
                 <p className="text-muted-foreground mt-4 text-base leading-relaxed">{course.description}</p>
               </section>
             </Reveal>
+
+            {certificate ? (
+              <Reveal>
+                <CourseCertificate title={course.title} src={certificate} />
+              </Reveal>
+            ) : null}
 
             {course.gallery.length > 0 ? (
               <Reveal>
