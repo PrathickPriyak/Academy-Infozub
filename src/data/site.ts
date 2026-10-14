@@ -4,6 +4,13 @@ export const site = {
   name: "Infozub Digital Academy",
   shortName: "Infozub",
   tagline: "Quality Education for Everyone",
+  /** Rotating hero taglines — typed in the home banner (published academy messaging). */
+  heroTypewriterPhrases: [
+    "Quality Education for Everyone",
+    "Practical digital skills that stick",
+    "Hands-on learning with certificates",
+    "Learn anytime, on any device",
+  ],
   description:
     "Infozub Digital Academy courses are designed to equip you with the skills and knowledge to succeed in the digital realm.",
   url: process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://academy.infozub.com",
