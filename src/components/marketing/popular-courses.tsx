@@ -76,11 +76,8 @@ function TrainingCard({
 export function PopularCourses() {
   const categories = listCategories();
   const allCourses = listCourses();
-  const defaultCategory =
-    categories.find((category) => category.slug === "marketing")?.slug ??
-    categories[0]?.slug ??
-    "all";
-  const [activeCategory, setActiveCategory] = useState(defaultCategory);
+  // Default to All so the 4-column grid stays full; category tabs still filter.
+  const [activeCategory, setActiveCategory] = useState("all");
 
   const filtered = useMemo(() => {
     const pool =
