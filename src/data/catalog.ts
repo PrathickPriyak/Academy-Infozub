@@ -1,11 +1,25 @@
 import catalogJson from "@/data/infozub-catalog.json";
+import { localCourseThumbnail, localGallery } from "@/data/course-thumbnails";
 
 export type CatalogCategory = (typeof catalogJson.categories)[number];
-export type CatalogCourse = (typeof catalogJson.courses)[number];
+type CatalogCourseJson = (typeof catalogJson.courses)[number];
+/** Galleries are empty in the JSON today; widen so local sanitization can return `string[]`. */
+export type CatalogCourse = Omit<CatalogCourseJson, "gallery" | "thumbnail"> & {
+  thumbnail: string;
+  gallery: string[];
+};
 export type CatalogModule = CatalogCourse["modules"][number];
 export type PlatformKnowledge = (typeof catalogJson.platform)[number];
 
 export const catalog = catalogJson;
+
+function withLocalMedia(course: CatalogCourseJson): CatalogCourse {
+  return {
+    ...course,
+    thumbnail: localCourseThumbnail(course.slug, course.thumbnail),
+    gallery: localGallery(course.gallery),
+  };
+}
 
 export function listPlatformKnowledge(): PlatformKnowledge[] {
   return catalog.platform;
@@ -16,11 +30,12 @@ export function listCategories(): CatalogCategory[] {
 }
 
 export function listCourses(): CatalogCourse[] {
-  return [...catalog.courses].sort((a, b) => a.title.localeCompare(b.title));
+  return catalog.courses.map(withLocalMedia).sort((a, b) => a.title.localeCompare(b.title));
 }
 
 export function getCourseBySlug(slug: string): CatalogCourse | undefined {
-  return catalog.courses.find((course) => course.slug === slug);
+  const course = catalog.courses.find((entry) => entry.slug === slug);
+  return course ? withLocalMedia(course) : undefined;
 }
 
 export function getCategoryBySlug(slug: string): CatalogCategory | undefined {

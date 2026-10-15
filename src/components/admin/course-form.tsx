@@ -73,10 +73,10 @@ export function CourseForm({
       <Input
         name="thumbnail"
         required
-        type="url"
+        type="text"
         defaultValue={course?.thumbnail}
-        placeholder="Thumbnail URL"
-        aria-label="Thumbnail URL"
+        placeholder="/course-thumbnails/my-course.webp"
+        aria-label="Thumbnail path"
       />
       <div className="grid gap-3 sm:grid-cols-2">
         <select

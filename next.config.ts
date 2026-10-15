@@ -37,12 +37,14 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
   async headers() {
+    const assetCache = [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }];
     return [
       { source: "/:path*", headers: securityHeaders },
-      {
-        source: "/infozub-logo.jpg",
-        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
-      },
+      { source: "/infozub-logo.jpg", headers: assetCache },
+      { source: "/infozub-logo.png", headers: assetCache },
+      { source: "/infozub-mark.png", headers: assetCache },
+      { source: "/course-thumbnails/:path*", headers: assetCache },
+      { source: "/certificates/:path*", headers: assetCache },
     ];
   },
 };
