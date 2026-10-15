@@ -61,7 +61,6 @@ export default async function CourseDetailPage({ params }: Props) {
         course={course}
         category={meta.category}
         price={meta.price}
-        level={meta.level}
         outcomes={outcomes}
         requirements={requirements}
         faqs={faqs}
@@ -70,7 +69,6 @@ export default async function CourseDetailPage({ params }: Props) {
       <JsonLd
         data={courseJsonLd(course, {
           category: meta.category,
-          level: meta.level,
           faqs,
         })}
       />

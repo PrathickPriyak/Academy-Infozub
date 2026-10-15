@@ -15,7 +15,6 @@ export interface CourseExplorerItem {
   shortDescription: string;
   duration: string;
   priceLabel: string;
-  level: string;
   category: string;
   instructor: string;
   enrollmentUrl: string;
@@ -81,7 +80,6 @@ export function CourseExplorer({ courses }: { courses: CourseExplorerItem[] }) {
               <CardHeader>
                 <button type="button" className="text-left" onClick={() => setOpenId(open ? null : course.id)} aria-expanded={open}>
                   <div className="flex flex-wrap gap-2">
-                    <Badge>{course.level}</Badge>
                     <Badge variant="secondary">{course.category}</Badge>
                     <Badge variant="outline">{course.duration}</Badge>
                     <Badge variant="outline">{course.priceLabel}</Badge>

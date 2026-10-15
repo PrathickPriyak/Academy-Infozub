@@ -2,7 +2,6 @@ import {
   catalog,
   categoryNameForCourse,
   formatCoursePrice,
-  levelLabel,
   listPlatformKnowledge,
   type CatalogCourse,
 } from "@/data/catalog";
@@ -22,7 +21,6 @@ export function learningOutcomesFromCourse(course: CatalogCourse): string[] {
 
 export function courseRequirements(course: CatalogCourse): string[] {
   const items = [
-    `Published level: ${levelLabel(course.level)}.`,
     `Access: ${course.duration}.`,
     "Learning access is delivered through the courses.infozub.com platform after purchase.",
   ];
@@ -81,7 +79,6 @@ export function courseMeta(course: CatalogCourse) {
   return {
     category: categoryNameForCourse(course),
     price: formatCoursePrice(course),
-    level: levelLabel(course.level),
     instructorName: catalog.instructor.name,
     instructorTitle: catalog.instructor.title,
     instructorBio: catalog.instructor.bio,

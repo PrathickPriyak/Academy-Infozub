@@ -78,7 +78,7 @@ export function websiteJsonLd() {
 
 export function courseJsonLd(
   course: CatalogCourse,
-  options: { category: string; level: string; faqs: CourseFaq[] },
+  options: { category: string; faqs: CourseFaq[] },
 ) {
   const graph: Record<string, unknown>[] = [
     {
@@ -98,7 +98,6 @@ export function courseJsonLd(
         name: catalog.instructor.name,
         jobTitle: catalog.instructor.title || founder.title,
       },
-      educationalLevel: options.level,
       timeRequired: course.duration,
       about: options.category,
       offers:

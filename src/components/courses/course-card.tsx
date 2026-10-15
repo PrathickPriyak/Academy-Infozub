@@ -10,7 +10,6 @@ import {
   categoryNameForCourse,
   durationLabel,
   formatCoursePrice,
-  levelLabel,
   type CatalogCourse,
 } from "@/data/catalog";
 import { hoverLift, transitionFast } from "@/lib/motion";
@@ -69,10 +68,6 @@ export function CourseCard({
           </div>
 
           <div className="text-muted-foreground mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium">
-            <span>{levelLabel(course.level)}</span>
-            <span aria-hidden className="text-border">
-              ·
-            </span>
             <span className="inline-flex items-center gap-1">
               <Clock3 className="size-3.5 shrink-0" aria-hidden />
               {durationLabel(course.duration)}
