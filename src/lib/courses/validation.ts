@@ -21,8 +21,12 @@ export const courseInputSchema = z.object({
     .trim()
     .min(1, "Thumbnail is required.")
     .refine(
-      (value) => value.startsWith("/") || /^https?:\/\//i.test(value),
-      "Thumbnail must be a local path or a valid URL.",
+      (value) =>
+        value.startsWith("/") &&
+        !value.startsWith("//") &&
+        !value.includes("wp-content") &&
+        !/^https?:/i.test(value),
+      "Thumbnail must be a local /public path (for example /course-thumbnails/my-course.webp).",
     ),
   categoryId: z.string().trim().min(1, "Choose a category."),
   instructorId: z.string().trim().min(1, "Choose an instructor."),

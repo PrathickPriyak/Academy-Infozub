@@ -5,6 +5,16 @@ import { CourseLevel, PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
 
+/** Seed only writes local `/public` paths — never remote academy media. */
+function localThumbnail(slug: string, thumbnail: string): string {
+  const value = thumbnail.trim();
+  if (value.startsWith("/") && !value.startsWith("//") && !value.includes("wp-content") && !/^https?:/i.test(value)) {
+    return value;
+  }
+  console.warn(`Replacing non-local thumbnail for ${slug}: ${thumbnail}`);
+  return "/infozub-mark.png";
+}
+
 type CatalogModule = { title: string; description: string };
 type CatalogCourse = {
   category: string;
@@ -118,7 +128,7 @@ async function main() {
         slug: course.slug,
         shortDescription: course.shortDescription,
         description: course.description,
-        thumbnail: course.thumbnail,
+        thumbnail: localThumbnail(course.slug, course.thumbnail),
         level: CourseLevel.BEGINNER,
         duration: course.duration,
         price: course.price,
