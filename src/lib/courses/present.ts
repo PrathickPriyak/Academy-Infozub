@@ -1,11 +1,3 @@
-import type { CourseLevel } from "@prisma/client";
-
-export function levelLabel(level: CourseLevel): string {
-  if (level === "BEGINNER") return "Beginner";
-  if (level === "INTERMEDIATE") return "Intermediate";
-  return "Advanced";
-}
-
 export function formatPrice(price: number, currency = "INR"): string {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",

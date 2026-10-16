@@ -1,5 +1,5 @@
 import type { CourseRecord } from "@/lib/courses/queries";
-import { formatPrice, levelLabel } from "@/lib/courses/present";
+import { formatPrice } from "@/lib/courses/present";
 
 export interface KnowledgeDocument {
   courseId: string | null;
@@ -16,7 +16,7 @@ export function chunkCourse(course: CourseRecord): KnowledgeDocument[] {
       customKnowledgeId: null,
       sourceType: "description",
       title: `${course.title} description`,
-      content: `Infozub course offered: ${course.title}. Category: ${course.category.name}. Level: ${levelLabel(course.level)}. Short description: ${course.shortDescription} Description: ${course.description}`,
+      content: `Infozub course offered: ${course.title}. Category: ${course.category.name}. Short description: ${course.shortDescription} Description: ${course.description}`,
     },
     {
       courseId: course.id,

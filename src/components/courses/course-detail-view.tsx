@@ -27,7 +27,6 @@ export function CourseDetailView({
   course,
   category,
   price,
-  level,
   outcomes,
   requirements,
   faqs,
@@ -36,7 +35,6 @@ export function CourseDetailView({
   course: CatalogCourse;
   category: string;
   price: string;
-  level: string;
   outcomes: string[];
   requirements: string[];
   faqs: CourseFaq[];
@@ -93,7 +91,6 @@ export function CourseDetailView({
             >
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary">{category}</Badge>
-                <Badge variant="outline">{level}</Badge>
               </div>
               <h1 className="font-display mt-4 text-3xl tracking-tight break-words sm:text-4xl lg:text-5xl">
                 {course.title}
@@ -102,10 +99,9 @@ export function CourseDetailView({
                 {course.shortDescription}
               </p>
 
-              <dl className="border-border/80 mt-8 grid gap-x-6 gap-y-4 border-y py-5 sm:grid-cols-3">
+              <dl className="border-border/80 mt-8 grid gap-x-6 gap-y-4 border-y py-5 sm:grid-cols-2">
                 <MetaItem icon={<Clock3 className="size-4" aria-hidden />} label="Duration" value={course.duration} />
                 <MetaItem icon={<Layers3 className="size-4" aria-hidden />} label="Modules" value={String(course.modules.length)} />
-                <MetaItem icon={<CheckCircle2 className="size-4" aria-hidden />} label="Level" value={level} />
               </dl>
 
               <p className="text-muted-foreground mt-4 text-xs leading-relaxed">
@@ -208,8 +204,8 @@ export function CourseDetailView({
               <section>
                 <h2 className="font-display text-3xl tracking-tight">Requirements</h2>
                 <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-                  Access and level details published for Infozub Digital Academy courses. Specific software prerequisites
-                  are not listed in the archived catalog.
+                  Access details published for Infozub Digital Academy courses. Specific software prerequisites are not
+                  listed in the archived catalog.
                 </p>
                 <ul className="mt-6 space-y-3">
                   {requirements.map((item) => (
@@ -284,7 +280,6 @@ export function CourseDetailView({
               <p className="font-display mt-2 text-3xl tracking-tight">{price}</p>
               <p className="text-muted-foreground mt-2 text-sm leading-relaxed">{course.duration}</p>
               <ul className="text-muted-foreground mt-5 space-y-2.5 border-t border-border/70 pt-4 text-sm">
-                <li>{level} level</li>
                 <li>{course.modules.length} published modules</li>
               </ul>
               <Button asChild className="mt-5 w-full" size="lg">

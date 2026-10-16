@@ -9,7 +9,7 @@ import { deleteConversationAnalytics } from "@/lib/analytics/actions";
 import { getAnalyticsReport } from "@/lib/analytics/report";
 import { isAdminSignedIn } from "@/lib/admin-session";
 import { deleteCourse, setPublished } from "@/lib/courses/actions";
-import { formatPrice, levelLabel } from "@/lib/courses/present";
+import { formatPrice } from "@/lib/courses/present";
 import { listAllCourses } from "@/lib/courses/queries";
 import { getKnowledgeStats } from "@/lib/knowledge/stats";
 
@@ -119,8 +119,7 @@ export default async function AdminDashboardPage() {
                 <div>
                   <CardTitle>{course.title}</CardTitle>
                   <CardDescription>
-                    {levelLabel(course.level)} · {course.duration} ·{" "}
-                    {formatPrice(course.price, course.currency)} ·{" "}
+                    {course.duration} · {formatPrice(course.price, course.currency)} ·{" "}
                     {course.published ? "Published" : "Draft"}
                   </CardDescription>
                 </div>

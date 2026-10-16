@@ -57,13 +57,6 @@ export function formatCoursePrice(course: CatalogCourse): string {
   return "On request";
 }
 
-export function levelLabel(level: string): string {
-  if (level === "BEGINNER") return "Beginner";
-  if (level === "INTERMEDIATE") return "Intermediate";
-  if (level === "ADVANCED") return "Advanced";
-  return level;
-}
-
 /** Short labels for filters and card meta — values stay the published duration strings. */
 export function durationLabel(duration: string): string {
   const value = duration.toLowerCase();
@@ -71,10 +64,6 @@ export function durationLabel(duration: string): string {
   if (value.includes("12 months") || value.includes("15+")) return "12 months access";
   if (value.length > 28) return `${duration.slice(0, 26).trim()}…`;
   return duration;
-}
-
-export function listLevels(): string[] {
-  return [...new Set(listCourses().map((course) => course.level))].sort();
 }
 
 export function listDurations(): string[] {
@@ -100,7 +89,6 @@ function courseHaystack(course: CatalogCourse): string {
     course.category,
     catalog.instructor.name,
     catalog.instructor.title,
-    course.level,
     course.duration,
     ...course.modules.map((module) => `${module.title} ${module.description}`),
   ]
@@ -149,7 +137,6 @@ export type CourseSort = "popular" | "title" | "price-asc" | "price-desc" | "mod
 export function filterCourses(options: {
   query?: string;
   category?: string;
-  level?: string;
   price?: PriceFilter;
   duration?: string;
   instructor?: string;
@@ -158,9 +145,6 @@ export function filterCourses(options: {
   const query = options.query?.trim().toLowerCase() ?? "";
   let results = listCourses().filter((course) => {
     if (options.category && options.category !== "all" && course.category !== options.category) {
-      return false;
-    }
-    if (options.level && options.level !== "all" && course.level !== options.level) {
       return false;
     }
     if (options.duration && options.duration !== "all" && course.duration !== options.duration) {
@@ -209,7 +193,6 @@ export function filterCourses(options: {
 export function countActiveFilters(options: {
   query?: string;
   category?: string;
-  level?: string;
   price?: string;
   duration?: string;
   instructor?: string;
@@ -217,7 +200,6 @@ export function countActiveFilters(options: {
   let count = 0;
   if (options.query?.trim()) count += 1;
   if (options.category && options.category !== "all") count += 1;
-  if (options.level && options.level !== "all") count += 1;
   if (options.price && options.price !== "all") count += 1;
   if (options.duration && options.duration !== "all") count += 1;
   if (options.instructor && options.instructor !== "all") count += 1;

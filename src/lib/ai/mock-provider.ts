@@ -1,5 +1,5 @@
 import type { CourseRecord } from "@/lib/courses/queries";
-import { formatPrice, levelLabel } from "@/lib/courses/present";
+import { formatPrice } from "@/lib/courses/present";
 
 import type { AiProvider, AssistantRequest } from "./types";
 
@@ -22,7 +22,7 @@ function describeCourse(course: CourseRecord): string {
         `${module.title}: ${module.lessons.map((lesson) => lesson.title).join(", ")}`,
     )
     .join(" ");
-  return `${course.title} is a ${levelLabel(course.level).toLowerCase()} ${course.category.name} program that runs for ${course.duration}. ${course.shortDescription} Price: ${formatPrice(course.price, course.currency)}. Instructor: ${course.instructor.name}. Topics: ${topics}. Enroll at ${course.enrollmentUrl}.`;
+  return `${course.title} is a ${course.category.name} program that runs for ${course.duration}. ${course.shortDescription} Price: ${formatPrice(course.price, course.currency)}. Instructor: ${course.instructor.name}. Topics: ${topics}. Enroll at ${course.enrollmentUrl}.`;
 }
 
 export function answerFromKnowledge(courses: CourseRecord[], question: string): string {
@@ -47,7 +47,7 @@ export function answerFromKnowledge(courses: CourseRecord[], question: string): 
   ) {
     const list = courses
       .map(
-        (course) => `${course.title} (${course.duration}, ${levelLabel(course.level)})`,
+        (course) => `${course.title} (${course.duration})`,
       )
       .join("; ");
     return `Infozub Digital Academy currently offers these published programs: ${list}.`;

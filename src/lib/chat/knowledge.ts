@@ -111,7 +111,6 @@ export function buildKnowledgeChunks(): KnowledgeChunk[] {
         categoryNameForCourse(course),
         course.shortDescription,
         course.description,
-        `Level: ${course.level}`,
         `Duration: ${course.duration}`,
         `Price: ${formatCoursePrice(course)}`,
         `Enrollment: ${course.enrollmentUrl}`,

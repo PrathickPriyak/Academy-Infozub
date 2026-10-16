@@ -9,8 +9,6 @@ import { saveCourse, type ActionState } from "@/lib/courses/actions";
 
 const initial: ActionState = { ok: false, message: "" };
 
-const levels: CourseLevel[] = ["BEGINNER", "INTERMEDIATE", "ADVANCED"];
-
 export function CourseForm({
   categories,
   instructors,
@@ -112,28 +110,14 @@ export function CourseForm({
           ))}
         </select>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <select
-          name="level"
-          required
-          defaultValue={course?.level ?? "BEGINNER"}
-          aria-label="Level"
-          className="border-border bg-card h-11 rounded-lg border px-3 text-sm"
-        >
-          {levels.map((level) => (
-            <option key={level} value={level}>
-              {level}
-            </option>
-          ))}
-        </select>
-        <Input
-          name="duration"
-          required
-          defaultValue={course?.duration}
-          placeholder="Duration"
-          aria-label="Duration"
-        />
-      </div>
+      <input type="hidden" name="level" value={course?.level ?? "BEGINNER"} />
+      <Input
+        name="duration"
+        required
+        defaultValue={course?.duration}
+        placeholder="Duration"
+        aria-label="Duration"
+      />
       <Input
         name="price"
         required
