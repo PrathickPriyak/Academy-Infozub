@@ -4,12 +4,19 @@ const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
 };
 
-/** Prefer Neon / Vercel Marketplace connection names when DATABASE_URL is unset. */
+/** Neon / Vercel Marketplace connection names when DATABASE_URL is unset. */
 function resolveDatabaseUrl(): string | undefined {
   return (
     process.env.DATABASE_URL?.trim() ||
     process.env.POSTGRES_PRISMA_URL?.trim() ||
     process.env.POSTGRES_URL?.trim() ||
+    process.env.DATABASE_URL_UNPOOLED?.trim() ||
+    process.env.POSTGRES_URL_NON_POOLING?.trim() ||
+    // Custom prefix from Vercel Storage connect UI (e.g. STORAGE → STORAGE_URL)
+    process.env.STORAGE_URL?.trim() ||
+    process.env.STORAGE_DATABASE_URL?.trim() ||
+    process.env.STORAGE_POSTGRES_URL?.trim() ||
+    process.env.NEON_DATABASE_URL?.trim() ||
     undefined
   );
 }

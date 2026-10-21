@@ -15,8 +15,23 @@ function firstEnv(...keys) {
   return undefined;
 }
 
-const databaseUrl = firstEnv("DATABASE_URL", "POSTGRES_PRISMA_URL", "POSTGRES_URL");
-const directUrl = firstEnv("DIRECT_URL", "POSTGRES_URL_NON_POOLING");
+const databaseUrl = firstEnv(
+  "DATABASE_URL",
+  "POSTGRES_PRISMA_URL",
+  "POSTGRES_URL",
+  "DATABASE_URL_UNPOOLED",
+  "POSTGRES_URL_NON_POOLING",
+  "STORAGE_URL",
+  "STORAGE_DATABASE_URL",
+  "STORAGE_POSTGRES_URL",
+  "NEON_DATABASE_URL",
+);
+const directUrl = firstEnv(
+  "DIRECT_URL",
+  "POSTGRES_URL_NON_POOLING",
+  "DATABASE_URL_UNPOOLED",
+  "STORAGE_DATABASE_URL_UNPOOLED",
+);
 
 if (!databaseUrl) {
   console.log("db-prepare: no Postgres URL — skipping migrate (catalog fallback stays active).");
