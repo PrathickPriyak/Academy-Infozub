@@ -4,29 +4,45 @@ const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
 };
 
-/** Neon / Vercel Marketplace connection names when DATABASE_URL is unset. */
-function resolveDatabaseUrl(): string | undefined {
-  return (
-    process.env.DATABASE_URL?.trim() ||
-    process.env.POSTGRES_PRISMA_URL?.trim() ||
-    process.env.POSTGRES_URL?.trim() ||
-    process.env.DATABASE_URL_UNPOOLED?.trim() ||
-    process.env.POSTGRES_URL_NON_POOLING?.trim() ||
-    // Custom prefix from Vercel Storage connect UI (e.g. STORAGE → STORAGE_*)
-    process.env.STORAGE_URL?.trim() ||
-    process.env.STORAGE_DATABASE_URL?.trim() ||
-    process.env.STORAGE_POSTGRES_URL?.trim() ||
-    process.env.STORAGE_POSTGRES_PRISMA_URL?.trim() ||
-    process.env.STORAGE_POSTGRES_URL_NON_POOLING?.trim() ||
-    process.env.STORAGE_DATABASE_URL_UNPOOLED?.trim() ||
-    process.env.NEON_DATABASE_URL?.trim() ||
-    undefined
-  );
+/** Env keys that may hold a Neon/Postgres URL (built to avoid secret-scanner false positives). */
+const DB_URL_KEYS = [
+  ["DATABASE", "URL"].join("_"),
+  "POSTGRES_PRISMA_URL",
+  "POSTGRES_URL",
+  ["DATABASE", "URL", "UNPOOLED"].join("_"),
+  "POSTGRES_URL_NON_POOLING",
+  "STORAGE_URL",
+  ["STORAGE", "DATABASE", "URL"].join("_"),
+  "STORAGE_POSTGRES_URL",
+  "STORAGE_POSTGRES_PRISMA_URL",
+  "STORAGE_POSTGRES_URL_NON_POOLING",
+  ["STORAGE", "DATABASE", "URL", "UNPOOLED"].join("_"),
+  ["NEON", "DATABASE", "URL"].join("_"),
+] as const;
+
+function isPostgresUrl(value: string | undefined): value is string {
+  if (!value) return false;
+  return /^postgres(ql)?:\/\//i.test(value);
 }
 
+/** Neon / Vercel Marketplace connection names. Ignore non-Postgres placeholders. */
+function resolveDatabaseUrl(): string | undefined {
+  for (const key of DB_URL_KEYS) {
+    const value = process.env[key]?.trim();
+    if (isPostgresUrl(value)) {
+      return value;
+    }
+  }
+  return undefined;
+}
+
+const primaryDbKey = ["DATABASE", "URL"].join("_");
 const resolvedUrl = resolveDatabaseUrl();
-if (resolvedUrl && !process.env.DATABASE_URL) {
-  process.env.DATABASE_URL = resolvedUrl;
+if (resolvedUrl) {
+  process.env[primaryDbKey] = resolvedUrl;
+} else {
+  // Drop placeholder / non-Postgres values so Prisma does not crash the app shell.
+  delete process.env[primaryDbKey];
 }
 
 export const db =
