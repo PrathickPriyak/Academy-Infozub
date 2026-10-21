@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { loginAction } from "@/lib/admin-actions";
-import { demoAdmin, usingDemoAdminCredentials } from "@/lib/admin-session";
+import { demoAdmin } from "@/lib/admin-session";
 
 export default async function AdminLoginPage({
   searchParams,
@@ -16,14 +16,13 @@ export default async function AdminLoginPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const params = await searchParams;
-  const showDemoHint = usingDemoAdminCredentials();
 
   return (
     <main className="flex min-h-screen items-center justify-center px-4">
       <Card variant="elevated" className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Admin login</CardTitle>
-          <CardDescription>Preview access for course management.</CardDescription>
+          <CardDescription>Course management access.</CardDescription>
         </CardHeader>
         <CardContent>
           <form action={loginAction} className="grid gap-3">
@@ -33,7 +32,8 @@ export default async function AdminLoginPage({
               required
               placeholder="Email"
               aria-label="Email"
-              defaultValue={showDemoHint ? demoAdmin.email : undefined}
+              defaultValue={demoAdmin.email}
+              autoComplete="username"
             />
             <Input
               name="password"
@@ -41,25 +41,22 @@ export default async function AdminLoginPage({
               required
               placeholder="Password"
               aria-label="Password"
+              defaultValue={demoAdmin.password}
+              autoComplete="current-password"
             />
             {params.error ? (
               <p className="text-destructive text-sm">
-                Those credentials were not accepted.
-                {showDemoHint
-                  ? null
-                  : " Use the ADMIN_EMAIL and ADMIN_PASSWORD values set in Vercel, then redeploy."}
+                Sign-in failed. Use {demoAdmin.email} / {demoAdmin.password}, wait a minute if you tried many
+                times, then try again.
               </p>
             ) : null}
             <Button type="submit">Sign in</Button>
           </form>
-          {showDemoHint ? (
-            <p className="text-muted-foreground mt-4 text-xs">
-              Sign in with {demoAdmin.email} / {demoAdmin.password}
-              {process.env.NODE_ENV === "production"
-                ? " (set ADMIN_EMAIL, ADMIN_PASSWORD, and ADMIN_SESSION_SECRET in Vercel to replace these)."
-                : null}
-            </p>
-          ) : null}
+          <p className="text-muted-foreground mt-4 text-xs">
+            Email: <span className="text-foreground font-medium">{demoAdmin.email}</span>
+            <br />
+            Password: <span className="text-foreground font-medium">{demoAdmin.password}</span>
+          </p>
         </CardContent>
       </Card>
     </main>

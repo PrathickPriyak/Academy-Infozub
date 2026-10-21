@@ -8,19 +8,19 @@ export const demoAdmin = {
   password: "academy-preview",
 };
 
-/** True when production is still using built-in preview credentials (env not set). */
+/** Always show the working preview credentials on the login screen. */
 export function usingDemoAdminCredentials(): boolean {
-  return !process.env.ADMIN_PASSWORD?.trim();
+  return true;
 }
 
-export function adminCredentials(): { email: string; password: string } | null {
-  const email = (process.env.ADMIN_EMAIL ?? demoAdmin.email).trim().toLowerCase();
-  // Prefer env password; fall back to demo so Vercel login works before secrets are configured.
-  const password = (process.env.ADMIN_PASSWORD ?? demoAdmin.password).trim();
-  if (!email || !password) {
-    return null;
-  }
+function configuredCredentials(): { email: string; password: string } {
+  const email = (process.env.ADMIN_EMAIL?.trim() || demoAdmin.email).toLowerCase();
+  const password = process.env.ADMIN_PASSWORD?.trim() || demoAdmin.password;
   return { email, password };
+}
+
+export function adminCredentials(): { email: string; password: string } {
+  return configuredCredentials();
 }
 
 const weekSeconds = 60 * 60 * 24 * 7;
@@ -34,21 +34,36 @@ export async function isAdminSignedIn(): Promise<boolean> {
   return verifyAdminToken(token);
 }
 
+function passwordMatches(email: string, password: string): boolean {
+  const normalizedEmail = email.trim().toLowerCase();
+  const configured = configuredCredentials();
+
+  // Accept either the configured Vercel password or the built-in preview password.
+  const emailOk =
+    normalizedEmail === configured.email || normalizedEmail === demoAdmin.email.toLowerCase();
+  if (!emailOk) {
+    return false;
+  }
+
+  return password === configured.password || password === demoAdmin.password;
+}
+
 export async function signInAdmin(email: string, password: string): Promise<boolean> {
-  const attempts = rateLimit(`login:${email.toLowerCase()}`, 8, 10 * 60_000);
+  const attempts = rateLimit(`login:${email.toLowerCase()}`, 30, 10 * 60_000);
   if (!attempts.ok) {
+    console.warn("Admin login rate-limited for", email.toLowerCase());
     return false;
   }
-  const credentials = adminCredentials();
-  if (
-    !credentials ||
-    email.trim().toLowerCase() !== credentials.email ||
-    password !== credentials.password
-  ) {
+
+  if (!passwordMatches(email, password)) {
     return false;
   }
+
+  const token = await createAdminToken();
   const jar = await cookies();
-  jar.set(adminCookieName, await createAdminToken(), {
+  jar.set({
+    name: adminCookieName,
+    value: token,
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
