@@ -72,10 +72,15 @@ export function CourseForm({
         name="thumbnail"
         required
         type="text"
-        defaultValue={course?.thumbnail}
+        defaultValue={course?.thumbnail ?? "/course-thumbnails/my-course.webp"}
         placeholder="/course-thumbnails/my-course.webp"
         aria-label="Thumbnail path"
       />
+      <p className="text-muted-foreground text-xs">
+        Local path under <code className="font-mono">/public</code>. Ready now:{" "}
+        <code className="font-mono">/course-thumbnails/my-course.webp</code>. Or reuse e.g.{" "}
+        <code className="font-mono">/course-thumbnails/canva-master-course.webp</code>.
+      </p>
       <div className="grid gap-3 sm:grid-cols-2">
         <select
           name="categoryId"
