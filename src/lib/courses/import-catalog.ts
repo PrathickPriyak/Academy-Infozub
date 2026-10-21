@@ -30,7 +30,7 @@ const sharedFaqs = [
   },
 ];
 
-function faqsFor(_slug: string) {
+function faqsFor() {
   return sharedFaqs.map((item, index) => ({ ...item, position: index + 1 }));
 }
 
@@ -130,7 +130,7 @@ export async function importBundledCatalog(): Promise<ImportCatalogResult> {
         resources: {
           create: [{ title: "Course page", url: course.enrollmentUrl, kind: "course" }],
         },
-        faqs: { create: faqsFor(course.slug) },
+        faqs: { create: faqsFor() },
         modules: {
           create: course.modules.map((module, index) => ({
             title: module.title,
