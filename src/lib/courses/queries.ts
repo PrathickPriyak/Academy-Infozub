@@ -84,26 +84,45 @@ export async function getCourseById(id: string): Promise<CourseRecord | null> {
   }
 }
 
+function catalogCategoriesFallback() {
+  const now = new Date(0);
+  return listCatalogCoursesFallback()
+    .map((course) => course.category)
+    .filter((category, index, all) => all.findIndex((entry) => entry.id === category.id) === index)
+    .sort((left, right) => left.name.localeCompare(right.name))
+    .map((category) => ({
+      ...category,
+      createdAt: now,
+      updatedAt: now,
+    }));
+}
+
+function catalogInstructorsFallback() {
+  const sample = listCatalogCoursesFallback()[0];
+  if (!sample) return [];
+  return [sample.instructor];
+}
+
 export async function listCategories() {
   if (!process.env.DATABASE_URL) {
-    return [];
+    return catalogCategoriesFallback();
   }
   try {
     return await db.category.findMany({ orderBy: { name: "asc" } });
   } catch (error) {
     console.error("Category list failed.", error);
-    return [];
+    return catalogCategoriesFallback();
   }
 }
 
 export async function listInstructors() {
   if (!process.env.DATABASE_URL) {
-    return [];
+    return catalogInstructorsFallback();
   }
   try {
     return await db.instructor.findMany({ orderBy: { name: "asc" } });
   } catch (error) {
     console.error("Instructor list failed.", error);
-    return [];
+    return catalogInstructorsFallback();
   }
 }
