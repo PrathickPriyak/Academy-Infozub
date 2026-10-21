@@ -1,7 +1,7 @@
 import type { Prisma } from "@prisma/client";
 
 import { localCourseThumbnail } from "@/data/course-thumbnails";
-import { db } from "@/lib/db";
+import { db, hasDatabaseUrl } from "@/lib/db";
 
 import { listCatalogCoursesFallback } from "./catalog-fallback";
 import { courseInclude } from "./present";
@@ -16,7 +16,7 @@ function withLocalThumbnail(course: CourseRecord): CourseRecord {
 }
 
 export async function listPublishedCourses(): Promise<CourseRecord[]> {
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseUrl()) {
     return listCatalogCoursesFallback();
   }
 
@@ -34,7 +34,7 @@ export async function listPublishedCourses(): Promise<CourseRecord[]> {
 }
 
 export async function listAllCourses(): Promise<CourseRecord[]> {
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseUrl()) {
     return listCatalogCoursesFallback();
   }
 
@@ -51,7 +51,7 @@ export async function listAllCourses(): Promise<CourseRecord[]> {
 }
 
 export async function getCourseBySlug(slug: string): Promise<CourseRecord | null> {
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseUrl()) {
     return listCatalogCoursesFallback().find((course) => course.slug === slug) ?? null;
   }
 
@@ -68,7 +68,7 @@ export async function getCourseBySlug(slug: string): Promise<CourseRecord | null
 }
 
 export async function getCourseById(id: string): Promise<CourseRecord | null> {
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseUrl()) {
     return listCatalogCoursesFallback().find((course) => course.id === id) ?? null;
   }
 
@@ -104,11 +104,12 @@ function catalogInstructorsFallback() {
 }
 
 export async function listCategories() {
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseUrl()) {
     return catalogCategoriesFallback();
   }
   try {
-    return await db.category.findMany({ orderBy: { name: "asc" } });
+    const rows = await db.category.findMany({ orderBy: { name: "asc" } });
+    return rows.length > 0 ? rows : catalogCategoriesFallback();
   } catch (error) {
     console.error("Category list failed.", error);
     return catalogCategoriesFallback();
@@ -116,11 +117,12 @@ export async function listCategories() {
 }
 
 export async function listInstructors() {
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseUrl()) {
     return catalogInstructorsFallback();
   }
   try {
-    return await db.instructor.findMany({ orderBy: { name: "asc" } });
+    const rows = await db.instructor.findMany({ orderBy: { name: "asc" } });
+    return rows.length > 0 ? rows : catalogInstructorsFallback();
   } catch (error) {
     console.error("Instructor list failed.", error);
     return catalogInstructorsFallback();
