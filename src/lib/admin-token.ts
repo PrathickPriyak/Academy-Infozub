@@ -4,11 +4,13 @@ const encoder = new TextEncoder();
 const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
 
 function sessionSecret(): string {
-  const value = process.env.ADMIN_SESSION_SECRET;
-  if (!value) {
-    throw new Error("ADMIN_SESSION_SECRET is required.");
+  const value = process.env.ADMIN_SESSION_SECRET?.trim();
+  if (value) {
+    return value;
   }
-  return value;
+  // Allow admin login on Vercel before ADMIN_SESSION_SECRET is configured.
+  // Replace with a long random secret in production as soon as possible.
+  return "infozub-academy-admin-session-fallback";
 }
 
 function bytesToBase64Url(bytes: Uint8Array): string {

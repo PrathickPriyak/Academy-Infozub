@@ -8,9 +8,15 @@ export const demoAdmin = {
   password: "academy-preview",
 };
 
+/** True when production is still using built-in preview credentials (env not set). */
+export function usingDemoAdminCredentials(): boolean {
+  return !process.env.ADMIN_PASSWORD?.trim();
+}
+
 export function adminCredentials(): { email: string; password: string } | null {
-  const email = process.env.ADMIN_EMAIL ?? demoAdmin.email;
-  const password = process.env.ADMIN_PASSWORD ?? (process.env.NODE_ENV === "production" ? "" : demoAdmin.password);
+  const email = (process.env.ADMIN_EMAIL ?? demoAdmin.email).trim().toLowerCase();
+  // Prefer env password; fall back to demo so Vercel login works before secrets are configured.
+  const password = (process.env.ADMIN_PASSWORD ?? demoAdmin.password).trim();
   if (!email || !password) {
     return null;
   }
@@ -34,7 +40,11 @@ export async function signInAdmin(email: string, password: string): Promise<bool
     return false;
   }
   const credentials = adminCredentials();
-  if (!credentials || email !== credentials.email || password !== credentials.password) {
+  if (
+    !credentials ||
+    email.trim().toLowerCase() !== credentials.email ||
+    password !== credentials.password
+  ) {
     return false;
   }
   const jar = await cookies();
