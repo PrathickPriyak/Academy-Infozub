@@ -3,8 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { Prisma } from "@prisma/client";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
+
 import { requireAdmin } from "@/lib/admin-session";
-import { db } from "@/lib/db";
+import { db, hasDatabaseUrl } from "@/lib/db";
 
 import {
   courseInputSchema,
@@ -42,6 +45,12 @@ export async function saveCourse(
   formData: FormData,
 ): Promise<ActionState> {
   await requireAdmin();
+  if (!hasDatabaseUrl()) {
+    return fail(
+      "Database is not connected. Add DATABASE_URL in Vercel (Neon), redeploy, then try again.",
+    );
+  }
+
   const parsed = courseInputSchema.safeParse({
     title: formData.get("title"),
     slug: formData.get("slug"),
@@ -60,6 +69,15 @@ export async function saveCourse(
     return fail("Check the course fields.", fieldErrors(parsed.error));
   }
 
+  if (
+    parsed.data.categoryId.startsWith("catalog-") ||
+    parsed.data.instructorId.startsWith("catalog-")
+  ) {
+    return fail(
+      "Category/instructor are still in demo mode. Refresh this page after the database is connected, then create again.",
+    );
+  }
+
   const id = String(formData.get("id") ?? "");
   const data = parsed.data;
   try {
@@ -72,15 +90,19 @@ export async function saveCourse(
     refresh(created.id);
     redirect(`/admin/courses/${created.id}`);
   } catch (error) {
-    if (
-      typeof error === "object" &&
-      error !== null &&
-      "digest" in error &&
-      String(error.digest).startsWith("NEXT_REDIRECT")
-    ) {
+    if (isRedirectError(error)) {
       throw error;
     }
-    return fail("A course with that slug already exists.");
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        return fail("A course with that slug already exists. Change the slug and try again.");
+      }
+      if (error.code === "P2003") {
+        return fail("Choose a valid Category and Instructor from the lists, then try again.");
+      }
+    }
+    console.error("saveCourse failed.", error);
+    return fail("Could not save the course. Check the fields and database connection.");
   }
 }
 

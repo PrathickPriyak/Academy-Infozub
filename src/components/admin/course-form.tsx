@@ -9,6 +9,21 @@ import { saveCourse, type ActionState } from "@/lib/courses/actions";
 
 const initial: ActionState = { ok: false, message: "" };
 
+function demoDefaults() {
+  const stamp = Date.now().toString(36);
+  return {
+    title: "Demo Design Crash Course",
+    slug: `demo-design-crash-course-${stamp}`,
+    shortDescription: "A short demo course used to verify admin create works end to end.",
+    description:
+      "This is demo content for testing the Create course form. Replace the title, description, price, and enrollment URL with your real course details before publishing.",
+    thumbnail: "/course-thumbnails/my-course.webp",
+    duration: "Self-paced, lifetime access",
+    price: 999,
+    enrollmentUrl: "https://academy.infozub.com/course/tamil/adobe-photoshop/",
+  };
+}
+
 export function CourseForm({
   categories,
   instructors,
@@ -33,28 +48,37 @@ export function CourseForm({
   };
 }) {
   const [state, action, pending] = useActionState(saveCourse, initial);
+  const demo = course ? null : demoDefaults();
+  const defaultCategoryId = course?.categoryId ?? categories[0]?.id ?? "";
+  const defaultInstructorId = course?.instructorId ?? instructors[0]?.id ?? "";
 
   return (
     <form action={action} className="grid gap-3">
       {course ? <input type="hidden" name="id" value={course.id} /> : null}
+      {!course ? (
+        <p className="text-muted-foreground rounded-lg border border-border/70 bg-card/60 px-3 py-2 text-xs">
+          Demo values are prefilled. Change the slug if you create more than one test course, pick
+          Category + Instructor, then click Create course.
+        </p>
+      ) : null}
       <Input
         name="title"
         required
-        defaultValue={course?.title}
+        defaultValue={course?.title ?? demo?.title}
         placeholder="Title"
         aria-label="Title"
       />
       <Input
         name="slug"
         required
-        defaultValue={course?.slug}
+        defaultValue={course?.slug ?? demo?.slug}
         placeholder="slug"
         aria-label="Slug"
       />
       <textarea
         name="shortDescription"
         required
-        defaultValue={course?.shortDescription}
+        defaultValue={course?.shortDescription ?? demo?.shortDescription}
         placeholder="Short description"
         aria-label="Short description"
         className="border-border bg-card rounded-lg border px-3 py-2 text-sm"
@@ -63,7 +87,7 @@ export function CourseForm({
         name="description"
         required
         rows={4}
-        defaultValue={course?.description}
+        defaultValue={course?.description ?? demo?.description}
         placeholder="Description"
         aria-label="Description"
         className="border-border bg-card rounded-lg border px-3 py-2 text-sm"
@@ -72,20 +96,19 @@ export function CourseForm({
         name="thumbnail"
         required
         type="text"
-        defaultValue={course?.thumbnail ?? "/course-thumbnails/my-course.webp"}
+        defaultValue={course?.thumbnail ?? demo?.thumbnail}
         placeholder="/course-thumbnails/my-course.webp"
         aria-label="Thumbnail path"
       />
       <p className="text-muted-foreground text-xs">
         Local path under <code className="font-mono">/public</code>. Ready now:{" "}
-        <code className="font-mono">/course-thumbnails/my-course.webp</code>. Or reuse e.g.{" "}
-        <code className="font-mono">/course-thumbnails/canva-master-course.webp</code>.
+        <code className="font-mono">/course-thumbnails/my-course.webp</code>.
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         <select
           name="categoryId"
           required
-          defaultValue={course?.categoryId ?? ""}
+          defaultValue={defaultCategoryId}
           aria-label="Category"
           className="border-border bg-card h-11 rounded-lg border px-3 text-sm"
         >
@@ -101,7 +124,7 @@ export function CourseForm({
         <select
           name="instructorId"
           required
-          defaultValue={course?.instructorId ?? ""}
+          defaultValue={defaultInstructorId}
           aria-label="Instructor"
           className="border-border bg-card h-11 rounded-lg border px-3 text-sm"
         >
@@ -119,7 +142,7 @@ export function CourseForm({
       <Input
         name="duration"
         required
-        defaultValue={course?.duration}
+        defaultValue={course?.duration ?? demo?.duration}
         placeholder="Duration"
         aria-label="Duration"
       />
@@ -128,7 +151,7 @@ export function CourseForm({
         required
         type="number"
         min={0}
-        defaultValue={course?.price ?? 0}
+        defaultValue={course?.price ?? demo?.price}
         placeholder="Price in INR"
         aria-label="Price"
       />
@@ -136,12 +159,16 @@ export function CourseForm({
         name="enrollmentUrl"
         required
         type="url"
-        defaultValue={course?.enrollmentUrl}
-        placeholder="Enrollment URL"
+        defaultValue={course?.enrollmentUrl ?? demo?.enrollmentUrl}
+        placeholder="https://academy.infozub.com/course/..."
         aria-label="Enrollment URL"
       />
       <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" name="published" defaultChecked={course?.published} />
+        <input
+          type="checkbox"
+          name="published"
+          defaultChecked={course?.published ?? true}
+        />
         Published
       </label>
       {state.message ? (

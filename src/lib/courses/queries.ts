@@ -4,6 +4,7 @@ import { localCourseThumbnail } from "@/data/course-thumbnails";
 import { db, hasDatabaseUrl } from "@/lib/db";
 
 import { listCatalogCoursesFallback } from "./catalog-fallback";
+import { ensureAdminTaxonomy } from "./ensure-taxonomy";
 import { courseInclude } from "./present";
 
 export type CourseRecord = Prisma.CourseGetPayload<{ include: typeof courseInclude }>;
@@ -108,6 +109,7 @@ export async function listCategories() {
     return catalogCategoriesFallback();
   }
   try {
+    await ensureAdminTaxonomy();
     const rows = await db.category.findMany({ orderBy: { name: "asc" } });
     return rows.length > 0 ? rows : catalogCategoriesFallback();
   } catch (error) {
@@ -121,6 +123,7 @@ export async function listInstructors() {
     return catalogInstructorsFallback();
   }
   try {
+    await ensureAdminTaxonomy();
     const rows = await db.instructor.findMany({ orderBy: { name: "asc" } });
     return rows.length > 0 ? rows : catalogInstructorsFallback();
   } catch (error) {
