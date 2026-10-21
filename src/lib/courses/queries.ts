@@ -34,33 +34,76 @@ export async function listPublishedCourses(): Promise<CourseRecord[]> {
 }
 
 export async function listAllCourses(): Promise<CourseRecord[]> {
-  const courses = await db.course.findMany({
-    include: courseInclude,
-    orderBy: { updatedAt: "desc" },
-  });
-  return courses.map(withLocalThumbnail);
+  if (!process.env.DATABASE_URL) {
+    return listCatalogCoursesFallback();
+  }
+
+  try {
+    const courses = await db.course.findMany({
+      include: courseInclude,
+      orderBy: { updatedAt: "desc" },
+    });
+    return courses.map(withLocalThumbnail);
+  } catch (error) {
+    console.error("Falling back to bundled catalog for admin list; database query failed.", error);
+    return listCatalogCoursesFallback();
+  }
 }
 
 export async function getCourseBySlug(slug: string): Promise<CourseRecord | null> {
-  const course = await db.course.findUnique({
-    where: { slug },
-    include: courseInclude,
-  });
-  return course ? withLocalThumbnail(course) : null;
+  if (!process.env.DATABASE_URL) {
+    return listCatalogCoursesFallback().find((course) => course.slug === slug) ?? null;
+  }
+
+  try {
+    const course = await db.course.findUnique({
+      where: { slug },
+      include: courseInclude,
+    });
+    return course ? withLocalThumbnail(course) : null;
+  } catch (error) {
+    console.error("Falling back to bundled catalog for course slug; database query failed.", error);
+    return listCatalogCoursesFallback().find((course) => course.slug === slug) ?? null;
+  }
 }
 
 export async function getCourseById(id: string): Promise<CourseRecord | null> {
-  const course = await db.course.findUnique({
-    where: { id },
-    include: courseInclude,
-  });
-  return course ? withLocalThumbnail(course) : null;
+  if (!process.env.DATABASE_URL) {
+    return listCatalogCoursesFallback().find((course) => course.id === id) ?? null;
+  }
+
+  try {
+    const course = await db.course.findUnique({
+      where: { id },
+      include: courseInclude,
+    });
+    return course ? withLocalThumbnail(course) : null;
+  } catch (error) {
+    console.error("Falling back to bundled catalog for course id; database query failed.", error);
+    return listCatalogCoursesFallback().find((course) => course.id === id) ?? null;
+  }
 }
 
 export async function listCategories() {
-  return db.category.findMany({ orderBy: { name: "asc" } });
+  if (!process.env.DATABASE_URL) {
+    return [];
+  }
+  try {
+    return await db.category.findMany({ orderBy: { name: "asc" } });
+  } catch (error) {
+    console.error("Category list failed.", error);
+    return [];
+  }
 }
 
 export async function listInstructors() {
-  return db.instructor.findMany({ orderBy: { name: "asc" } });
+  if (!process.env.DATABASE_URL) {
+    return [];
+  }
+  try {
+    return await db.instructor.findMany({ orderBy: { name: "asc" } });
+  } catch (error) {
+    console.error("Instructor list failed.", error);
+    return [];
+  }
 }

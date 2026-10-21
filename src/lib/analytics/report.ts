@@ -41,32 +41,74 @@ function dayKey(date: Date): string {
   }).format(date);
 }
 
+function emptyAnalyticsReport(now = new Date()): AnalyticsReport {
+  const today = startOfAcademyDay(now);
+  const weekStart = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
+  const questionsByDay: DailyCount[] = [];
+  for (let offset = 0; offset < 7; offset += 1) {
+    const date = new Date(weekStart.getTime() + offset * 24 * 60 * 60 * 1000);
+    questionsByDay.push({ label: dayKey(date), count: 0 });
+  }
+  return {
+    conversations: 0,
+    questionsToday: 0,
+    fallbackQuestions: 0,
+    contactClicks: 0,
+    mostAsked: [],
+    mostDiscussed: [],
+    questionsByDay,
+    outcomes: [
+      { label: "Answers", count: 0 },
+      { label: "Fallbacks", count: 0 },
+      { label: "Contact clicks", count: 0 },
+    ],
+  };
+}
+
 export async function getAnalyticsReport(now = new Date()): Promise<AnalyticsReport> {
+  if (!process.env.DATABASE_URL) {
+    return emptyAnalyticsReport(now);
+  }
+
   const today = startOfAcademyDay(now);
   const weekStart = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
 
-  const [conversations, questionsToday, fallbackQuestions, contactClicks, asked, discussed, weekQuestions, answers] =
-    await Promise.all([
-      db.analyticsEvent.count({ where: { type: "chat_started" } }),
-      db.analyticsEvent.count({ where: { type: "question_asked", createdAt: { gte: today } } }),
-      db.analyticsEvent.count({ where: { type: "fallback_triggered" } }),
-      db.analyticsEvent.count({ where: { type: "contact_clicked" } }),
-      db.analyticsEvent.groupBy({
-        by: ["question"],
-        where: { type: "question_asked", question: { not: null } },
-        _count: { question: true },
-      }),
-      db.analyticsEvent.groupBy({
-        by: ["courseTitle"],
-        where: { type: "answer_generated", courseTitle: { not: null } },
-        _count: { courseTitle: true },
-      }),
-      db.analyticsEvent.findMany({
-        where: { type: "question_asked", createdAt: { gte: weekStart } },
-        select: { createdAt: true },
-      }),
-      db.analyticsEvent.count({ where: { type: "answer_generated" } }),
-    ]);
+  let conversations: number;
+  let questionsToday: number;
+  let fallbackQuestions: number;
+  let contactClicks: number;
+  let asked: Array<{ question: string | null; _count: { question: number } }>;
+  let discussed: Array<{ courseTitle: string | null; _count: { courseTitle: number } }>;
+  let weekQuestions: Array<{ createdAt: Date }>;
+  let answers: number;
+
+  try {
+    [conversations, questionsToday, fallbackQuestions, contactClicks, asked, discussed, weekQuestions, answers] =
+      await Promise.all([
+        db.analyticsEvent.count({ where: { type: "chat_started" } }),
+        db.analyticsEvent.count({ where: { type: "question_asked", createdAt: { gte: today } } }),
+        db.analyticsEvent.count({ where: { type: "fallback_triggered" } }),
+        db.analyticsEvent.count({ where: { type: "contact_clicked" } }),
+        db.analyticsEvent.groupBy({
+          by: ["question"],
+          where: { type: "question_asked", question: { not: null } },
+          _count: { question: true },
+        }),
+        db.analyticsEvent.groupBy({
+          by: ["courseTitle"],
+          where: { type: "answer_generated", courseTitle: { not: null } },
+          _count: { courseTitle: true },
+        }),
+        db.analyticsEvent.findMany({
+          where: { type: "question_asked", createdAt: { gte: weekStart } },
+          select: { createdAt: true },
+        }),
+        db.analyticsEvent.count({ where: { type: "answer_generated" } }),
+      ]);
+  } catch (error) {
+    console.error("Analytics report unavailable; returning empty report.", error);
+    return emptyAnalyticsReport(now);
+  }
 
   const dayCounts = new Map<string, number>();
   for (let offset = 0; offset < 7; offset += 1) {

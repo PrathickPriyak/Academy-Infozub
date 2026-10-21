@@ -7,8 +7,16 @@ import { db } from "@/lib/db";
 
 export async function deleteConversationAnalytics(): Promise<void> {
   await requireAdmin();
-  await db.analyticsEvent.deleteMany();
-  await db.conversationMessage.deleteMany();
-  await db.conversation.deleteMany();
+  if (!process.env.DATABASE_URL) {
+    revalidatePath("/admin");
+    return;
+  }
+  try {
+    await db.analyticsEvent.deleteMany();
+    await db.conversationMessage.deleteMany();
+    await db.conversation.deleteMany();
+  } catch (error) {
+    console.error("Failed to delete conversation analytics.", error);
+  }
   revalidatePath("/admin");
 }
