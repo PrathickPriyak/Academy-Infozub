@@ -60,10 +60,9 @@ export default async function AdminDashboardPage() {
       <div className="mx-auto grid w-full max-w-6xl gap-4 px-4 py-8 sm:px-6">
         {!hasDatabaseUrl() ? (
           <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-950 dark:text-amber-100">
-            Database is not connected. Showing the bundled catalog in read-only mode. In Vercel →
-            Storage, create a Neon Postgres database for this project, then set{" "}
-            <code className="font-mono">DATABASE_URL</code> (use the Neon{" "}
-            <code className="font-mono">POSTGRES_PRISMA_URL</code>) and redeploy. Set{" "}
+            Database is not connected on this deploy. Open Vercel → Settings → Environment
+            Variables and confirm a Postgres URL exists for Production (name it{" "}
+            <code className="font-mono">DATABASE_URL</code>), then Redeploy. Set{" "}
             <code className="font-mono">SEED_ON_DEPLOY=1</code> once to import courses.
           </p>
         ) : null}
