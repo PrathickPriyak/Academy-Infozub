@@ -4,6 +4,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  // On Vercel Storage → Neon, set DATABASE_URL to POSTGRES_PRISMA_URL
+  // (or POSTGRES_URL_NON_POOLING). Build runs migrate deploy automatically.
   url      = env("DATABASE_URL")
 }
 

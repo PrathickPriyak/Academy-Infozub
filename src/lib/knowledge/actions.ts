@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { requireAdmin } from "@/lib/admin-session";
-import { db } from "@/lib/db";
+import { db, hasDatabaseUrl } from "@/lib/db";
 import { z } from "zod";
 
 import type { ActionState } from "@/lib/courses/actions";
@@ -23,8 +23,8 @@ export async function addCustomKnowledge(
   formData: FormData,
 ): Promise<ActionState> {
   await requireAdmin();
-  if (!process.env.DATABASE_URL) {
-    return { ok: false, message: "Database is not connected. Add DATABASE_URL in Vercel first." };
+  if (!hasDatabaseUrl()) {
+    return { ok: false, message: "Database is not connected. Add Neon Postgres in Vercel Storage first." };
   }
   const parsed = customSchema.safeParse({
     title: formData.get("title"),
@@ -45,7 +45,7 @@ export async function addCustomKnowledge(
 
 export async function deleteKnowledge(formData: FormData): Promise<void> {
   await requireAdmin();
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseUrl()) {
     refresh();
     return;
   }
@@ -65,7 +65,7 @@ export async function deleteKnowledge(formData: FormData): Promise<void> {
 
 export async function listIndexedKnowledge(query: string) {
   await requireAdmin();
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseUrl()) {
     return [];
   }
   const term = query.trim();

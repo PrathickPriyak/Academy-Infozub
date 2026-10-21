@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, hasDatabaseUrl } from "@/lib/db";
 
 export interface RankedItem {
   label: string;
@@ -66,7 +66,7 @@ function emptyAnalyticsReport(now = new Date()): AnalyticsReport {
 }
 
 export async function getAnalyticsReport(now = new Date()): Promise<AnalyticsReport> {
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseUrl()) {
     return emptyAnalyticsReport(now);
   }
 

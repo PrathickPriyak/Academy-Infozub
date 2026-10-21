@@ -3,11 +3,11 @@
 import { revalidatePath } from "next/cache";
 
 import { requireAdmin } from "@/lib/admin-session";
-import { db } from "@/lib/db";
+import { db, hasDatabaseUrl } from "@/lib/db";
 
 export async function deleteConversationAnalytics(): Promise<void> {
   await requireAdmin();
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseUrl()) {
     revalidatePath("/admin");
     return;
   }

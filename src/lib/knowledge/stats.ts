@@ -1,5 +1,5 @@
 import { listCatalogCoursesFallback } from "@/lib/courses/catalog-fallback";
-import { db } from "@/lib/db";
+import { db, hasDatabaseUrl } from "@/lib/db";
 
 export interface KnowledgeStats {
   courses: number;
@@ -28,7 +28,7 @@ function catalogStatsFallback(): KnowledgeStats {
 }
 
 export async function getKnowledgeStats(): Promise<KnowledgeStats> {
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseUrl()) {
     return catalogStatsFallback();
   }
 

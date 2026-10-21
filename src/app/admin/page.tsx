@@ -11,6 +11,7 @@ import { isAdminSignedIn } from "@/lib/admin-session";
 import { deleteCourse, setPublished } from "@/lib/courses/actions";
 import { formatPrice } from "@/lib/courses/present";
 import { listAllCourses } from "@/lib/courses/queries";
+import { hasDatabaseUrl } from "@/lib/db";
 import { getKnowledgeStats } from "@/lib/knowledge/stats";
 
 export const dynamic = "force-dynamic";
@@ -57,11 +58,13 @@ export default async function AdminDashboardPage() {
         </div>
       </header>
       <div className="mx-auto grid w-full max-w-6xl gap-4 px-4 py-8 sm:px-6">
-        {!process.env.DATABASE_URL ? (
+        {!hasDatabaseUrl() ? (
           <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-950 dark:text-amber-100">
-            Database is not connected on this deployment. Showing the bundled course catalog in
-            read-only mode. Add <code className="font-mono">DATABASE_URL</code> in Vercel to enable
-            edits, analytics, and knowledge indexing.
+            Database is not connected. Showing the bundled catalog in read-only mode. In Vercel →
+            Storage, create a Neon Postgres database for this project, then set{" "}
+            <code className="font-mono">DATABASE_URL</code> (use the Neon{" "}
+            <code className="font-mono">POSTGRES_PRISMA_URL</code>) and redeploy. Set{" "}
+            <code className="font-mono">SEED_ON_DEPLOY=1</code> once to import courses.
           </p>
         ) : null}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
