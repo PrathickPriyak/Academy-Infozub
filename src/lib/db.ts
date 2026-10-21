@@ -12,10 +12,13 @@ function resolveDatabaseUrl(): string | undefined {
     process.env.POSTGRES_URL?.trim() ||
     process.env.DATABASE_URL_UNPOOLED?.trim() ||
     process.env.POSTGRES_URL_NON_POOLING?.trim() ||
-    // Custom prefix from Vercel Storage connect UI (e.g. STORAGE → STORAGE_URL)
+    // Custom prefix from Vercel Storage connect UI (e.g. STORAGE → STORAGE_*)
     process.env.STORAGE_URL?.trim() ||
     process.env.STORAGE_DATABASE_URL?.trim() ||
     process.env.STORAGE_POSTGRES_URL?.trim() ||
+    process.env.STORAGE_POSTGRES_PRISMA_URL?.trim() ||
+    process.env.STORAGE_POSTGRES_URL_NON_POOLING?.trim() ||
+    process.env.STORAGE_DATABASE_URL_UNPOOLED?.trim() ||
     process.env.NEON_DATABASE_URL?.trim() ||
     undefined
   );

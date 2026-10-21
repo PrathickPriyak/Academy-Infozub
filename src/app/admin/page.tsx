@@ -59,12 +59,28 @@ export default async function AdminDashboardPage() {
       </header>
       <div className="mx-auto grid w-full max-w-6xl gap-4 px-4 py-8 sm:px-6">
         {!hasDatabaseUrl() ? (
-          <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-950 dark:text-amber-100">
-            Database is not connected on this deploy. Open Vercel → Settings → Environment
-            Variables and confirm a Postgres URL exists for Production (name it{" "}
-            <code className="font-mono">DATABASE_URL</code>), then Redeploy. Set{" "}
-            <code className="font-mono">SEED_ON_DEPLOY=1</code> once to import courses.
-          </p>
+          <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-950 dark:text-amber-100">
+            <p>
+              Database is not connected on this deploy. Open Vercel → Settings → Environment
+              Variables, add <code className="font-mono">DATABASE_URL</code> for{" "}
+              <strong>Production</strong> (paste the Neon connection string), then Redeploy.
+              Set <code className="font-mono">SEED_ON_DEPLOY=1</code> once to import courses.
+            </p>
+            <p className="mt-2 text-xs opacity-90">
+              Checked env keys present:{" "}
+              {[
+                "DATABASE_URL",
+                "POSTGRES_PRISMA_URL",
+                "POSTGRES_URL",
+                "STORAGE_URL",
+                "STORAGE_DATABASE_URL",
+                "STORAGE_POSTGRES_URL",
+                "STORAGE_POSTGRES_PRISMA_URL",
+              ]
+                .filter((key) => Boolean(process.env[key]?.trim()))
+                .join(", ") || "none"}
+            </p>
+          </div>
         ) : null}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {metrics.map(([label, value]) => (

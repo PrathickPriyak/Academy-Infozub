@@ -1,46 +1,52 @@
 /**
  * Runs on Vercel build when a Postgres URL is available.
- * Supports Neon / Vercel Marketplace env names:
- *   DATABASE_URL | POSTGRES_PRISMA_URL | POSTGRES_URL
- * Optional non-pooled URL for migrations:
- *   DIRECT_URL | POSTGRES_URL_NON_POOLING
+ * Never fails the Next.js build — migrate/seed errors are logged so deploys still ship.
  */
 import { spawnSync } from "node:child_process";
 
 function firstEnv(...keys) {
   for (const key of keys) {
     const value = process.env[key]?.trim();
-    if (value) return value;
+    if (value) return { key, value };
   }
   return undefined;
 }
 
-const databaseUrl = firstEnv(
+const pooled = firstEnv(
   "DATABASE_URL",
   "POSTGRES_PRISMA_URL",
   "POSTGRES_URL",
-  "DATABASE_URL_UNPOOLED",
-  "POSTGRES_URL_NON_POOLING",
   "STORAGE_URL",
   "STORAGE_DATABASE_URL",
   "STORAGE_POSTGRES_URL",
+  "STORAGE_POSTGRES_PRISMA_URL",
   "NEON_DATABASE_URL",
 );
-const directUrl = firstEnv(
+
+const unpooled = firstEnv(
   "DIRECT_URL",
   "POSTGRES_URL_NON_POOLING",
   "DATABASE_URL_UNPOOLED",
   "STORAGE_DATABASE_URL_UNPOOLED",
+  "STORAGE_POSTGRES_URL_NON_POOLING",
 );
 
-if (!databaseUrl) {
+if (!pooled && !unpooled) {
   console.log("db-prepare: no Postgres URL — skipping migrate (catalog fallback stays active).");
   process.exit(0);
 }
 
-process.env.DATABASE_URL = databaseUrl;
-if (directUrl) {
-  process.env.DIRECT_URL = directUrl;
+const migrateUrl = unpooled?.value ?? pooled?.value;
+const appUrl = pooled?.value ?? unpooled?.value;
+
+console.log(
+  `db-prepare: using ${unpooled ? unpooled.key : pooled.key} for migrate` +
+    (pooled && unpooled ? ` (app URL from ${pooled.key})` : ""),
+);
+
+process.env.DATABASE_URL = migrateUrl;
+if (unpooled) {
+  process.env.DIRECT_URL = unpooled.value;
 }
 
 console.log("db-prepare: applying Prisma migrations…");
@@ -48,19 +54,24 @@ const migrate = spawnSync("npx", ["prisma", "migrate", "deploy"], {
   stdio: "inherit",
   env: process.env,
 });
-if (migrate.status !== 0) {
-  process.exit(migrate.status ?? 1);
-}
 
-if (process.env.SEED_ON_DEPLOY === "1") {
+if (migrate.status !== 0) {
+  console.error(
+    "db-prepare: migrate deploy failed — continuing build. Fix the DB URL / run migrate later.",
+  );
+} else if (process.env.SEED_ON_DEPLOY === "1") {
   console.log("db-prepare: SEED_ON_DEPLOY=1 — seeding catalog…");
+  // Prefer pooled/app URL for seed runtime after migrate
+  process.env.DATABASE_URL = appUrl;
   const seed = spawnSync("npx", ["prisma", "db", "seed"], {
     stdio: "inherit",
     env: process.env,
   });
   if (seed.status !== 0) {
-    process.exit(seed.status ?? 1);
+    console.error("db-prepare: seed failed — continuing build. Run npm run db:seed later.");
   }
 }
 
-console.log("db-prepare: database ready.");
+process.env.DATABASE_URL = appUrl;
+console.log("db-prepare: done.");
+process.exit(0);
