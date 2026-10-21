@@ -8,7 +8,7 @@ import { logoutAction } from "@/lib/admin-actions";
 import { deleteConversationAnalytics } from "@/lib/analytics/actions";
 import { getAnalyticsReport } from "@/lib/analytics/report";
 import { isAdminSignedIn } from "@/lib/admin-session";
-import { deleteCourse, setPublished } from "@/lib/courses/actions";
+import { deleteCourse, importCatalogAction, setPublished } from "@/lib/courses/actions";
 import { formatPrice } from "@/lib/courses/present";
 import { listAllCourses } from "@/lib/courses/queries";
 import { hasDatabaseUrl } from "@/lib/db";
@@ -42,10 +42,17 @@ export default async function AdminDashboardPage() {
       <header className="border-border border-b">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
           <p className="font-display text-lg tracking-tight">Knowledge dashboard</p>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline">
               <Link href="/admin/knowledge">Manage knowledge</Link>
             </Button>
+            {hasDatabaseUrl() ? (
+              <form action={importCatalogAction}>
+                <Button type="submit" variant="secondary">
+                  Import catalog
+                </Button>
+              </form>
+            ) : null}
             <Button asChild>
               <Link href="/admin/courses/new">Create course</Link>
             </Button>

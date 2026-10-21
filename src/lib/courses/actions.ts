@@ -9,6 +9,7 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { requireAdmin } from "@/lib/admin-session";
 import { db, hasDatabaseUrl } from "@/lib/db";
 
+import { importBundledCatalog } from "./import-catalog";
 import {
   courseInputSchema,
   durationSchema,
@@ -104,6 +105,16 @@ export async function saveCourse(
     console.error("saveCourse failed.", error);
     return fail("Could not save the course. Check the fields and database connection.");
   }
+}
+
+export async function importCatalogAction(): Promise<void> {
+  await requireAdmin();
+  const result = await importBundledCatalog();
+  refresh();
+  if (!result.ok) {
+    throw new Error(result.message);
+  }
+  redirect("/admin");
 }
 
 export async function deleteCourse(formData: FormData): Promise<void> {
