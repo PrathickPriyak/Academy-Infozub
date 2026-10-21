@@ -8,7 +8,7 @@ import { db, hasDatabaseUrl } from "@/lib/db";
 export async function deleteConversationAnalytics(): Promise<void> {
   await requireAdmin();
   if (!hasDatabaseUrl()) {
-    revalidatePath("/admin");
+    revalidatePath("/infozub-admin");
     return;
   }
   try {
@@ -18,5 +18,5 @@ export async function deleteConversationAnalytics(): Promise<void> {
   } catch (error) {
     console.error("Failed to delete conversation analytics.", error);
   }
-  revalidatePath("/admin");
+  revalidatePath("/infozub-admin");
 }

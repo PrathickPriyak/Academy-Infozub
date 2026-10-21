@@ -24,13 +24,19 @@ async function main() {
   check("open graph", html.includes('property="og:title"') || html.includes("og:title"));
 
   const robots = await (await fetch(`${origin}/robots.txt`)).text();
-  check("robots", robots.includes("Disallow: /admin") && robots.includes("Sitemap:"));
+  check(
+    "robots",
+    robots.includes("Disallow: /infozub-admin") && robots.includes("Sitemap:"),
+  );
   const sitemap = await (await fetch(`${origin}/sitemap.xml`)).text();
   check("sitemap", sitemap.includes("/chat") && sitemap.includes("/courses") && sitemap.includes("/contact"));
 
-  const adminApi = await fetch(`${origin}/api/admin/knowledge/reindex`, { method: "POST" });
+  const adminApi = await fetch(`${origin}/api/infozub-admin/knowledge/reindex`, { method: "POST" });
   check("admin api protected", adminApi.status === 401);
-  const forged = await fetch(`${origin}/admin`, { headers: { Cookie: "infozub_admin=signed-in" }, redirect: "manual" });
+  const forged = await fetch(`${origin}/infozub-admin`, {
+    headers: { Cookie: "infozub_admin=signed-in" },
+    redirect: "manual",
+  });
   check("forged admin cookie", forged.status === 307 || forged.status === 302);
   const token = await createAdminToken();
   check("signed admin token", await verifyAdminToken(token));

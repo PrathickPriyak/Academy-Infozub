@@ -6,9 +6,11 @@ import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { Reveal, RevealItem, RevealStagger } from "@/components/marketing/reveal";
 import { Button } from "@/components/ui/button";
-import { listCourses } from "@/data/catalog";
 import { academyMedia } from "@/data/media";
 import { aboutContent, audiences, founder, highlights, site } from "@/data/site";
+import { listPublicCourses } from "@/lib/courses/public-catalog";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "About",
@@ -26,8 +28,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
-  const courseCount = listCourses().length;
+export default async function AboutPage() {
+  const courseCount = (await listPublicCourses()).length;
   const brandMark = academyMedia.brandMark;
   const press = academyMedia.press.filter(Boolean);
 

@@ -6,7 +6,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useId, useMemo, useRef, useState } from "react";
 
-import { searchCatalog, type SearchHit } from "@/data/catalog";
+import {
+  searchCatalog,
+  type CatalogCategory,
+  type CatalogCourse,
+  type SearchHit,
+} from "@/data/catalog";
 import { duration, easeOutPremium, listItemFade } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -28,8 +33,34 @@ export function CourseSearch({
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [liveCourses, setLiveCourses] = useState<CatalogCourse[] | null>(null);
+  const [liveCategories, setLiveCategories] = useState<CatalogCategory[] | null>(null);
 
-  const hits = useMemo(() => searchCatalog(query, 8), [query]);
+  useEffect(() => {
+    let cancelled = false;
+    void fetch("/api/catalog")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { courses?: CatalogCourse[]; categories?: CatalogCategory[] } | null) => {
+        if (cancelled || !data) return;
+        if (Array.isArray(data.courses)) setLiveCourses(data.courses);
+        if (Array.isArray(data.categories)) setLiveCategories(data.categories);
+      })
+      .catch(() => {
+        /* keep static catalog fallback */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const hits = useMemo(
+    () =>
+      searchCatalog(query, 8, {
+        courses: liveCourses ?? undefined,
+        categories: liveCategories ?? undefined,
+      }),
+    [query, liveCourses, liveCategories],
+  );
   const popupOpen = open && Boolean(query.trim());
 
   useEffect(() => {

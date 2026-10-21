@@ -18,17 +18,17 @@ export async function loginAction(formData: FormData): Promise<void> {
       throw error;
     }
     console.error("Admin sign-in failed.", error);
-    redirect("/admin/login?error=1");
+    redirect("/infozub-admin/login?error=1");
   }
 
   if (!ok) {
-    redirect("/admin/login?error=1");
+    redirect("/infozub-admin/login?error=1");
   }
 
-  redirect("/admin");
+  redirect("/infozub-admin");
 }
 
 export async function logoutAction(): Promise<void> {
   await signOutAdmin();
-  redirect("/admin/login");
+  redirect("/infozub-admin/login");
 }

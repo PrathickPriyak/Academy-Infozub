@@ -31,14 +31,28 @@ function fail(message: string, errors?: Record<string, string>): ActionState {
   return { ok: false, message, fieldErrors: errors };
 }
 
-function refresh(courseId?: string) {
+function refresh(courseId?: string, slug?: string) {
   revalidatePath("/");
   revalidatePath("/courses");
-  revalidatePath("/admin");
-  revalidatePath("/admin/knowledge");
+  revalidatePath("/courses", "layout");
+  revalidatePath("/about");
+  revalidatePath("/sitemap.xml");
+  revalidatePath("/infozub-admin");
+  revalidatePath("/infozub-admin/knowledge");
   if (courseId) {
-    revalidatePath(`/admin/courses/${courseId}`);
+    revalidatePath(`/infozub-admin/courses/${courseId}`);
   }
+  if (slug) {
+    revalidatePath(`/courses/${slug}`);
+  }
+}
+
+async function refreshByCourseId(courseId: string) {
+  const course = await db.course.findUnique({
+    where: { id: courseId },
+    select: { slug: true },
+  });
+  refresh(courseId, course?.slug);
 }
 
 export async function saveCourse(
@@ -48,7 +62,7 @@ export async function saveCourse(
   await requireAdmin();
   if (!hasDatabaseUrl()) {
     return fail(
-      "Database is not connected. Add DATABASE_URL in Vercel (Neon), redeploy, then try again.",
+      "Database is not connected. Add the Neon Postgres URL in Vercel, redeploy, then try again.",
     );
   }
 
@@ -84,12 +98,12 @@ export async function saveCourse(
   try {
     if (id) {
       await db.course.update({ where: { id }, data });
-      refresh(id);
+      refresh(id, data.slug);
       return { ok: true, message: "Course updated." };
     }
     const created = await db.course.create({ data });
-    refresh(created.id);
-    redirect(`/admin/courses/${created.id}`);
+    refresh(created.id, created.slug);
+    redirect(`/infozub-admin/courses/${created.id}`);
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
@@ -114,7 +128,7 @@ export async function importCatalogAction(): Promise<void> {
   if (!result.ok) {
     throw new Error(result.message);
   }
-  redirect("/admin");
+  redirect("/infozub-admin");
 }
 
 export async function deleteCourse(formData: FormData): Promise<void> {
@@ -123,17 +137,22 @@ export async function deleteCourse(formData: FormData): Promise<void> {
   if (!id) {
     throw new Error("Course id is required.");
   }
+  const existing = await db.course.findUnique({ where: { id }, select: { slug: true } });
   await db.course.delete({ where: { id } });
-  refresh();
-  redirect("/admin");
+  refresh(id, existing?.slug);
+  redirect("/infozub-admin");
 }
 
 export async function setPublished(formData: FormData): Promise<void> {
   await requireAdmin();
   const id = String(formData.get("id") ?? "");
   const published = formData.get("published") === "true";
-  await db.course.update({ where: { id }, data: { published } });
-  refresh(id);
+  const updated = await db.course.update({
+    where: { id },
+    data: { published },
+    select: { id: true, slug: true },
+  });
+  refresh(updated.id, updated.slug);
 }
 
 export async function updatePricing(
@@ -152,7 +171,7 @@ export async function updatePricing(
     where: { id: parsed.data.courseId },
     data: { price: parsed.data.price },
   });
-  refresh(parsed.data.courseId);
+  await refreshByCourseId(parsed.data.courseId);
   return { ok: true, message: "Price updated." };
 }
 
@@ -172,7 +191,7 @@ export async function updateDuration(
     where: { id: parsed.data.courseId },
     data: { duration: parsed.data.duration },
   });
-  refresh(parsed.data.courseId);
+  await refreshByCourseId(parsed.data.courseId);
   return { ok: true, message: "Duration updated." };
 }
 
@@ -193,7 +212,7 @@ export async function addModule(
   await db.module.create({
     data: { ...parsed.data, position: count + 1 },
   });
-  refresh(parsed.data.courseId);
+  await refreshByCourseId(parsed.data.courseId);
   return { ok: true, message: "Module added." };
 }
 
@@ -221,7 +240,7 @@ export async function addLesson(
   await db.lesson.create({
     data: { ...parsed.data, position: count + 1 },
   });
-  refresh(parentModule.courseId);
+  await refreshByCourseId(parentModule.courseId);
   return { ok: true, message: "Lesson added." };
 }
 
@@ -242,7 +261,7 @@ export async function addFaq(
   await db.faq.create({
     data: { ...parsed.data, position: count + 1 },
   });
-  refresh(parsed.data.courseId);
+  await refreshByCourseId(parsed.data.courseId);
   return { ok: true, message: "FAQ added." };
 }
 
@@ -260,6 +279,6 @@ export async function addFeature(
     return fail("Check the feature fields.", fieldErrors(parsed.error));
   }
   await db.courseFeature.create({ data: parsed.data });
-  refresh(parsed.data.courseId);
+  await refreshByCourseId(parsed.data.courseId);
   return { ok: true, message: "Feature added." };
 }

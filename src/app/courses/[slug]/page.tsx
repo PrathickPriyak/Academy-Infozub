@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 
 import { CourseDetailView } from "@/components/courses/course-detail-view";
 import { JsonLd } from "@/components/seo/json-ld";
-import { getCourseBySlug, listCourses } from "@/data/catalog";
 import {
   courseFaqs,
   courseMeta,
@@ -11,17 +10,21 @@ import {
   courseReviews,
   learningOutcomesFromCourse,
 } from "@/lib/courses/presenters";
+import { getPublicCourseBySlug, listPublicCourses } from "@/lib/courses/public-catalog";
 import { courseJsonLd, defaultOgImage } from "@/lib/seo";
+
+export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return listCourses().map((course) => ({ slug: course.slug }));
+export async function generateStaticParams() {
+  const courses = await listPublicCourses();
+  return courses.map((course) => ({ slug: course.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const course = getCourseBySlug(slug);
+  const course = await getPublicCourseBySlug(slug);
   if (!course) return { title: "Course not found" };
   const image = { url: course.thumbnail, alt: course.title };
   return {
@@ -46,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CourseDetailPage({ params }: Props) {
   const { slug } = await params;
-  const course = getCourseBySlug(slug);
+  const course = await getPublicCourseBySlug(slug);
   if (!course) notFound();
 
   const meta = courseMeta(course);

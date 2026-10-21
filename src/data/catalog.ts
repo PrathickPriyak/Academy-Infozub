@@ -96,11 +96,18 @@ function courseHaystack(course: CatalogCourse): string {
     .toLowerCase();
 }
 
-export function searchCatalog(query: string, limit = 8): SearchHit[] {
+export function searchCatalog(
+  query: string,
+  limit = 8,
+  options?: { courses?: CatalogCourse[]; categories?: CatalogCategory[] },
+): SearchHit[] {
   const q = query.trim().toLowerCase();
   if (!q) return [];
 
-  const courseHits: SearchHit[] = listCourses()
+  const courses = options?.courses ?? listCourses();
+  const categories = options?.categories ?? listCategories();
+
+  const courseHits: SearchHit[] = courses
     .filter((course) => courseHaystack(course).includes(q))
     .slice(0, limit)
     .map((course) => ({
@@ -110,7 +117,7 @@ export function searchCatalog(query: string, limit = 8): SearchHit[] {
       href: `/courses/${course.slug}`,
     }));
 
-  const categoryHits: SearchHit[] = listCategories()
+  const categoryHits: SearchHit[] = categories
     .filter((category) => {
       const haystack = `${category.name} ${category.description}`.toLowerCase();
       return haystack.includes(q);
@@ -141,9 +148,11 @@ export function filterCourses(options: {
   duration?: string;
   instructor?: string;
   sort?: CourseSort;
+  courses?: CatalogCourse[];
 }): CatalogCourse[] {
   const query = options.query?.trim().toLowerCase() ?? "";
-  let results = listCourses().filter((course) => {
+  const source = options.courses ?? listCourses();
+  let results = source.filter((course) => {
     if (options.category && options.category !== "all" && course.category !== options.category) {
       return false;
     }

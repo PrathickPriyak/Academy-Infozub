@@ -68,7 +68,7 @@ if (stats.indexedDocuments < 1 || !stats.lastKnowledgeUpdate) {
   throw new Error("Indexed documents or last update missing.");
 }
 
-const dashboard = await fetch("http://127.0.0.1:3000/admin", {
+const dashboard = await fetch("http://127.0.0.1:3000/infozub-admin", {
   headers: { Cookie: `infozub_admin=${token}` },
 });
 const html = await dashboard.text();
@@ -76,7 +76,7 @@ if (dashboard.status !== 200 || !html.includes("Total courses") || !html.include
   throw new Error(`Dashboard was not available to a signed admin (${dashboard.status}).`);
 }
 
-const knowledgePage = await fetch("http://127.0.0.1:3000/admin/knowledge", {
+const knowledgePage = await fetch("http://127.0.0.1:3000/infozub-admin/knowledge", {
   headers: { Cookie: `infozub_admin=${token}` },
 });
 const knowledgeHtml = await knowledgePage.text();
@@ -88,7 +88,7 @@ if (
   throw new Error(`Knowledge management page was not available (${knowledgePage.status}).`);
 }
 
-const reindex = await fetch("http://127.0.0.1:3000/api/admin/knowledge/reindex", {
+const reindex = await fetch("http://127.0.0.1:3000/api/infozub-admin/knowledge/reindex", {
   method: "POST",
   headers: { Cookie: `infozub_admin=${token}` },
 });

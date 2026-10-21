@@ -5,7 +5,7 @@ import { LazyInquiryWidget } from "@/components/inquiry/lazy-inquiry-widget";
 import { SiteFooter } from "./site-footer";
 import { SiteHeader } from "./site-header";
 
-export function SiteShell({ children }: { children: ReactNode }) {
+export async function SiteShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <a

@@ -71,7 +71,7 @@ async function main() {
   }
 
   const token = await createAdminToken();
-  const page = await fetch("http://127.0.0.1:3000/admin", {
+  const page = await fetch("http://127.0.0.1:3000/infozub-admin", {
     headers: { Cookie: `infozub_admin=${token}` },
   });
   const html = await page.text();

@@ -19,7 +19,7 @@ export default async function AdminKnowledgePage({
   searchParams: Promise<{ q?: string }>;
 }) {
   if (!(await isAdminSignedIn())) {
-    redirect("/admin/login");
+    redirect("/infozub-admin/login");
   }
 
   const params = await searchParams;
@@ -35,7 +35,7 @@ export default async function AdminKnowledgePage({
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
           <p className="font-display text-lg tracking-tight">Knowledge management</p>
           <Button asChild variant="outline">
-            <Link href="/admin">Dashboard</Link>
+            <Link href="/infozub-admin">Dashboard</Link>
           </Button>
         </div>
       </header>
@@ -116,7 +116,7 @@ export default async function AdminKnowledgePage({
                     <div className="flex gap-2">
                       {chunk.course ? (
                         <Button asChild variant="outline" size="sm">
-                          <Link href={`/admin/courses/${chunk.course.id}`}>Update course</Link>
+                          <Link href={`/infozub-admin/courses/${chunk.course.id}`}>Update course</Link>
                         </Button>
                       ) : null}
                       <form action={deleteKnowledge}>

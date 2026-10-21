@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function NewCoursePage() {
   if (!(await isAdminSignedIn())) {
-    redirect("/admin/login");
+    redirect("/infozub-admin/login");
   }
 
   const [categories, instructors] = await Promise.all([

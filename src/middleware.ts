@@ -5,7 +5,15 @@ import { adminCookieName, verifyAdminToken } from "@/lib/admin-token";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (pathname === "/admin/login") {
+
+  // Legacy /admin → /infozub-admin
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.replace(/^\/admin/, "/infozub-admin");
+    return NextResponse.redirect(url);
+  }
+
+  if (pathname === "/infozub-admin/login") {
     return NextResponse.next();
   }
 
@@ -15,16 +23,22 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (pathname.startsWith("/api/admin")) {
+  if (pathname.startsWith("/api/infozub-admin")) {
     return NextResponse.json({ error: "Admin sign-in is required." }, { status: 401 });
   }
 
   const login = request.nextUrl.clone();
-  login.pathname = "/admin/login";
+  login.pathname = "/infozub-admin/login";
   login.search = "";
   return NextResponse.redirect(login);
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*", "/api/admin/:path*"],
+  matcher: [
+    "/admin",
+    "/admin/:path*",
+    "/infozub-admin",
+    "/infozub-admin/:path*",
+    "/api/infozub-admin/:path*",
+  ],
 };

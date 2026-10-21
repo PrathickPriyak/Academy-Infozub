@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { listCategories } from "@/data/catalog";
+import { listCategories, type CatalogCategory } from "@/data/catalog";
 import { navLinks } from "@/data/site";
 import { cn } from "@/lib/utils";
 
@@ -30,9 +30,26 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-  const categories = listCategories();
+  const [categories, setCategories] = useState<CatalogCategory[]>(() => listCategories());
 
   const closeMobile = useCallback(() => setMobileOpen(false), []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetch("/api/catalog")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { categories?: CatalogCategory[] } | null) => {
+        if (!cancelled && Array.isArray(data?.categories) && data.categories.length > 0) {
+          setCategories(data.categories);
+        }
+      })
+      .catch(() => {
+        /* keep static categories */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -194,7 +211,7 @@ export function SiteHeader() {
         </AnimatePresence>
       </header>
 
-      <MobileNav open={mobileOpen} onClose={closeMobile} />
+      <MobileNav open={mobileOpen} onClose={closeMobile} categories={categories} />
     </>
   );
 }

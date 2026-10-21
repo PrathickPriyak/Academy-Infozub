@@ -1,12 +1,14 @@
 import type { MetadataRoute } from "next";
 
-import { listCourses } from "@/data/catalog";
 import { site } from "@/data/site";
+import { listPublicCourses } from "@/lib/courses/public-catalog";
 
 /** Stable lastModified — avoid rewriting every build with Date.now(). */
 const CATALOG_UPDATED = new Date("2024-06-17T00:00:00.000Z");
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const courses = await listPublicCourses();
+
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: site.url, lastModified: CATALOG_UPDATED, changeFrequency: "weekly", priority: 1 },
     {
@@ -47,7 +49,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  const courseRoutes = listCourses().map((course) => ({
+  const courseRoutes = courses.map((course) => ({
     url: `${site.url}/courses/${course.slug}`,
     lastModified: CATALOG_UPDATED,
     changeFrequency: "monthly" as const,

@@ -3,12 +3,13 @@ import { cookies } from "next/headers";
 import { adminCookieName, createAdminToken, verifyAdminToken } from "@/lib/admin-token";
 import { rateLimit } from "@/lib/security/rate-limit";
 
+/** Built-in admin credentials (also used when Vercel env vars are missing). */
 export const demoAdmin = {
-  email: "admin@infozub.academy",
-  password: "academy-preview",
+  email: "infozub@academy.net",
+  password: "Infozub@6154",
 };
 
-/** Always show the working preview credentials on the login screen. */
+/** Always show the working credentials on the login screen. */
 export function usingDemoAdminCredentials(): boolean {
   return true;
 }
@@ -38,7 +39,6 @@ function passwordMatches(email: string, password: string): boolean {
   const normalizedEmail = email.trim().toLowerCase();
   const configured = configuredCredentials();
 
-  // Accept either the configured Vercel password or the built-in preview password.
   const emailOk =
     normalizedEmail === configured.email || normalizedEmail === demoAdmin.email.toLowerCase();
   if (!emailOk) {

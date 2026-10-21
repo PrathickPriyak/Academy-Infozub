@@ -19,7 +19,7 @@ export function KnowledgeSearch({ initialQuery }: { initialQuery: string }) {
         if (query.trim()) {
           params.set("q", query.trim());
         }
-        router.push(params.size > 0 ? `/admin/knowledge?${params}` : "/admin/knowledge");
+        router.push(params.size > 0 ? `/infozub-admin/knowledge?${params}` : "/infozub-admin/knowledge");
       }}
     >
       <Input

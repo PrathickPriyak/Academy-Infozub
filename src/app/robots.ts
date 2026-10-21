@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/chat"],
+      disallow: ["/api/", "/chat", "/infozub-admin", "/admin"],
     },
     sitemap: `${site.url}/sitemap.xml`,
     host: site.url,

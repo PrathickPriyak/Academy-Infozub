@@ -47,7 +47,7 @@ export function InquiryWidget() {
   const formRef = useRef<HTMLFormElement>(null);
 
   const hidden =
-    pathname.startsWith("/admin") || pathname.startsWith("/chat") || pathname.startsWith("/api");
+    pathname.startsWith("/infozub-admin") || pathname.startsWith("/chat") || pathname.startsWith("/api");
   const onCourseDetail = /^\/courses\/[^/]+$/.test(pathname);
 
   const closePanel = useCallback(() => {
