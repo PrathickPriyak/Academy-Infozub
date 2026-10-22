@@ -73,8 +73,15 @@ function TrainingCard({
   );
 }
 
-export function PopularCourses() {
-  const allCourses = useMemo(() => listCourses(), []);
+export function PopularCourses({
+  courses,
+  categories,
+}: {
+  courses?: CatalogCourse[];
+  categories?: ReturnType<typeof listCategories>;
+} = {}) {
+  const allCourses = useMemo(() => courses ?? listCourses(), [courses]);
+  const allCategories = useMemo(() => categories ?? listCategories(), [categories]);
   // Default to All so the 4-column grid stays full; category tabs still filter.
   const [activeCategory, setActiveCategory] = useState("all");
 
@@ -89,11 +96,11 @@ export function PopularCourses() {
   const filterTabs = useMemo(
     () => [
       { slug: "all", name: "All" },
-      ...listCategories().filter((category) =>
+      ...allCategories.filter((category) =>
         allCourses.some((course) => course.category === category.slug),
       ),
     ],
-    [allCourses],
+    [allCourses, allCategories],
   );
 
   return (

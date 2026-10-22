@@ -1,5 +1,10 @@
-import { formatCoursePrice, listCategories, listCourses } from "@/data/catalog";
+import {
+  formatCoursePrice,
+  type CatalogCategory,
+  type CatalogCourse,
+} from "@/data/catalog";
 import { refundSummary, site } from "@/data/site";
+import { listPublicCategories, listPublicCourses } from "@/lib/courses/public-catalog";
 
 import { retrieveKnowledgeScored, ungroundedTokens, type KnowledgeChunk } from "./knowledge";
 import { maybeRewriteWithProvider } from "./provider";
@@ -26,10 +31,6 @@ function isLikelyOffTopic(question: string): boolean {
   return false;
 }
 
-function listCourseTitles(): string[] {
-  return listCourses().map((course) => course.title);
-}
-
 function aboutChunks(chunks: KnowledgeChunk[]): KnowledgeChunk[] {
   return chunks.filter(
     (chunk) =>
@@ -39,17 +40,22 @@ function aboutChunks(chunks: KnowledgeChunk[]): KnowledgeChunk[] {
   );
 }
 
-function composeFromChunks(question: string, chunks: KnowledgeChunk[]): string {
+function composeFromChunks(
+  question: string,
+  chunks: KnowledgeChunk[],
+  courses: CatalogCourse[],
+  categories: CatalogCategory[],
+): string {
   const courseChunks = chunks.filter((chunk) => chunk.id.startsWith("course-"));
   const categoryChunks = chunks.filter((chunk) => chunk.id.startsWith("category-"));
   const q = question.toLowerCase();
 
   if (/\b(what courses|which courses|list courses|offer)\b/.test(q) || q.includes("courses do you")) {
-    return `Infozub Digital Academy currently lists these published courses: ${listCourseTitles().join("; ")}. Open any course page for modules, published pricing, and enrollment links.`;
+    return `Infozub Digital Academy currently lists these published courses: ${courses.map((course) => course.title).join("; ")}. Open any course page for modules, published pricing, and enrollment links.`;
   }
 
   if (/\b(ai courses?|show me ai)\b/.test(q)) {
-    const aiCourses = listCourses().filter((course) =>
+    const aiCourses = courses.filter((course) =>
       `${course.title} ${course.shortDescription} ${course.description}`.toLowerCase().includes("ai"),
     );
     if (!aiCourses.length) {
@@ -61,8 +67,8 @@ function composeFromChunks(question: string, chunks: KnowledgeChunk[]): string {
   }
 
   if (/\b(digital marketing|marketing courses?)\b/.test(q)) {
-    const marketing = listCourses().filter((course) => course.category === "marketing");
-    const cats = listCategories()
+    const marketing = courses.filter((course) => course.category === "marketing");
+    const cats = categories
       .filter((category) => category.slug === "marketing")
       .map((category) => category.name);
     return `${cats[0] ?? "Marketing"} courses published by Infozub: ${marketing
@@ -149,7 +155,11 @@ export async function answerQuestion(question: string): Promise<ChatReply> {
     });
   }
 
-  const scored = retrieveKnowledgeScored(trimmed, 6);
+  const [courses, categories] = await Promise.all([
+    listPublicCourses(),
+    listPublicCategories(),
+  ]);
+  const scored = retrieveKnowledgeScored(trimmed, 6, courses, categories);
   const topScore = scored[0]?.score ?? 0;
   const chunks = scored.map((item) => item.chunk);
   const intentTokens = new Set([
@@ -184,7 +194,7 @@ export async function answerQuestion(question: string): Promise<ChatReply> {
     });
   }
 
-  let answer = composeFromChunks(trimmed, chunks);
+  let answer = composeFromChunks(trimmed, chunks, courses, categories);
 
   if (answer.includes("I don't have enough information")) {
     return baseReply({

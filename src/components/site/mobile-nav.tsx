@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
-import { listCategories } from "@/data/catalog";
+import { listCategories, type CatalogCategory } from "@/data/catalog";
 import { navLinks, site } from "@/data/site";
 import { useChromeOverlayLock } from "@/hooks/use-chrome-overlay-lock";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
@@ -21,13 +21,15 @@ import { ThemeToggle } from "./theme-toggle";
 export function MobileNav({
   open,
   onClose,
+  categories: categoriesProp,
 }: {
   open: boolean;
   onClose: () => void;
+  categories?: CatalogCategory[];
 }) {
   const pathname = usePathname();
   const reduceMotion = useReducedMotion();
-  const categories = listCategories();
+  const categories = categoriesProp ?? listCategories();
   const panelRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const titleId = useId();

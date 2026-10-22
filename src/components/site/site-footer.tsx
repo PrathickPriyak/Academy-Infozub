@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 import { Container } from "@/components/layout/container";
-import { listCategories } from "@/data/catalog";
 import { navLinks, site } from "@/data/site";
+import { listPublicCategories } from "@/lib/courses/public-catalog";
 
 import { BrandLogo } from "./brand-logo";
 
@@ -18,8 +18,8 @@ const exploreLinks = [
   { href: site.lms, label: "LMS", external: true as const },
 ];
 
-export function SiteFooter() {
-  const categories = listCategories();
+export async function SiteFooter() {
+  const categories = await listPublicCategories();
   const year = new Date().getFullYear();
 
   return (

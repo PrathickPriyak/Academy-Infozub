@@ -14,8 +14,8 @@ const customSchema = z.object({
 });
 
 function refresh() {
-  revalidatePath("/admin");
-  revalidatePath("/admin/knowledge");
+  revalidatePath("/infozub-admin");
+  revalidatePath("/infozub-admin/knowledge");
 }
 
 export async function addCustomKnowledge(

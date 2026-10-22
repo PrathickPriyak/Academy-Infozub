@@ -22,7 +22,7 @@ export default async function EditCoursePage({
   params: Promise<{ id: string }>;
 }) {
   if (!(await isAdminSignedIn())) {
-    redirect("/admin/login");
+    redirect("/infozub-admin/login");
   }
 
   const { id } = await params;
@@ -40,7 +40,7 @@ export default async function EditCoursePage({
     <main className="mx-auto grid w-full max-w-5xl gap-8 px-4 py-8">
       <div className="flex items-center justify-between">
         <h1 className="font-display text-3xl tracking-tight">Edit {course.title}</h1>
-        <Link href="/admin" className="text-primary text-sm">
+        <Link href="/infozub-admin" className="text-primary text-sm">
           Back to admin
         </Link>
       </div>

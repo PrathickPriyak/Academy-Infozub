@@ -4,8 +4,11 @@ import {
   listCategories,
   listCourses,
   listPlatformKnowledge,
+  type CatalogCategory,
+  type CatalogCourse,
 } from "@/data/catalog";
 import { aboutContent, audiences, founder, highlights, navLinks, site } from "@/data/site";
+import { listPublicCategories, listPublicCourses } from "@/lib/courses/public-catalog";
 
 export type KnowledgeChunk = {
   id: string;
@@ -15,7 +18,10 @@ export type KnowledgeChunk = {
   scoreBoost?: number;
 };
 
-export function buildKnowledgeChunks(): KnowledgeChunk[] {
+export function buildKnowledgeChunks(
+  courses: CatalogCourse[] = listCourses(),
+  categories: CatalogCategory[] = listCategories(),
+): KnowledgeChunk[] {
   const chunks: KnowledgeChunk[] = [
     {
       id: "site-overview",
@@ -88,8 +94,8 @@ export function buildKnowledgeChunks(): KnowledgeChunk[] {
     });
   }
 
-  for (const category of listCategories()) {
-    const courseTitles = listCourses()
+  for (const category of categories) {
+    const courseTitles = courses
       .filter((course) => course.category === category.slug)
       .map((course) => course.title);
     chunks.push({
@@ -101,7 +107,7 @@ export function buildKnowledgeChunks(): KnowledgeChunk[] {
     });
   }
 
-  for (const course of listCourses()) {
+  for (const course of courses) {
     const modules = course.modules.map((module, index) => `Module ${index + 1}: ${module.title}`).join("; ");
     chunks.push({
       id: `course-${course.slug}`,
@@ -183,7 +189,7 @@ function contentTokens(value: string): string[] {
 
 export type ScoredChunk = { chunk: KnowledgeChunk; score: number };
 
-export function retrieveKnowledgeScored(question: string, limit = 6): ScoredChunk[] {
+function scoreKnowledgeChunks(question: string, chunks: KnowledgeChunk[], limit: number): ScoredChunk[] {
   const tokens = contentTokens(question);
   if (!tokens.length) return [];
 
@@ -194,7 +200,7 @@ export function retrieveKnowledgeScored(question: string, limit = 6): ScoredChun
   const wantsContact = /\b(contact|email|phone|address|office)\b/i.test(question);
   const wantsInstructor = /\b(instructor|teacher|founder|logesh|mentor)\b/i.test(question);
 
-  return buildKnowledgeChunks()
+  return chunks
     .map((chunk) => {
       const haystack = `${chunk.title} ${chunk.text}`.toLowerCase();
       let score = chunk.scoreBoost ?? 0;
@@ -215,6 +221,31 @@ export function retrieveKnowledgeScored(question: string, limit = 6): ScoredChun
     .filter((item) => item.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
+}
+
+export function retrieveKnowledgeScored(
+  question: string,
+  limit = 6,
+  courses?: CatalogCourse[],
+  categories?: CatalogCategory[],
+): ScoredChunk[] {
+  return scoreKnowledgeChunks(
+    question,
+    buildKnowledgeChunks(courses ?? listCourses(), categories ?? listCategories()),
+    limit,
+  );
+}
+
+/** Live Neon catalog when connected — keeps chat answers in sync with admin CRUD. */
+export async function retrieveKnowledgeScoredLive(
+  question: string,
+  limit = 6,
+): Promise<ScoredChunk[]> {
+  const [courses, categories] = await Promise.all([
+    listPublicCourses(),
+    listPublicCategories(),
+  ]);
+  return scoreKnowledgeChunks(question, buildKnowledgeChunks(courses, categories), limit);
 }
 
 /** Tokens in the question that do not appear in retrieved context (hallucination risk). */

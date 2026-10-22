@@ -29,7 +29,7 @@ export function KnowledgeReindex() {
 
   async function updateKnowledge() {
     setState({ ...initial, status: "running" });
-    const response = await fetch("/api/admin/knowledge/reindex", { method: "POST" });
+    const response = await fetch("/api/infozub-admin/knowledge/reindex", { method: "POST" });
     if (response.status === 401) {
       setState({ ...initial, status: "error", errors: ["Admin sign-in is required."] });
       return;

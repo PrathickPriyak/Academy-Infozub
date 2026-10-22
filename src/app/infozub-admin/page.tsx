@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
   if (!(await isAdminSignedIn())) {
-    redirect("/admin/login");
+    redirect("/infozub-admin/login");
   }
 
   const [courses, stats, analytics] = await Promise.all([
@@ -44,7 +44,7 @@ export default async function AdminDashboardPage() {
           <p className="font-display text-lg tracking-tight">Knowledge dashboard</p>
           <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline">
-              <Link href="/admin/knowledge">Manage knowledge</Link>
+              <Link href="/infozub-admin/knowledge">Manage knowledge</Link>
             </Button>
             {hasDatabaseUrl() ? (
               <form action={importCatalogAction}>
@@ -54,7 +54,7 @@ export default async function AdminDashboardPage() {
               </form>
             ) : null}
             <Button asChild>
-              <Link href="/admin/courses/new">Create course</Link>
+              <Link href="/infozub-admin/courses/new">Create course</Link>
             </Button>
             <form action={logoutAction}>
               <Button type="submit" variant="outline">
@@ -65,27 +65,13 @@ export default async function AdminDashboardPage() {
         </div>
       </header>
       <div className="mx-auto grid w-full max-w-6xl gap-4 px-4 py-8 sm:px-6">
-        {!hasDatabaseUrl() ? (
+                {!hasDatabaseUrl() ? (
           <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-950 dark:text-amber-100">
             <p>
-              Database is not connected on this deploy. Open Vercel → Settings → Environment
-              Variables, add <code className="font-mono">DATABASE_URL</code> for{" "}
-              <strong>Production</strong> (paste the Neon connection string), then Redeploy.
-              Set <code className="font-mono">SEED_ON_DEPLOY=1</code> once to import courses.
-            </p>
-            <p className="mt-2 text-xs opacity-90">
-              Checked env keys present:{" "}
-              {[
-                "DATABASE_URL",
-                "POSTGRES_PRISMA_URL",
-                "POSTGRES_URL",
-                "STORAGE_URL",
-                "STORAGE_DATABASE_URL",
-                "STORAGE_POSTGRES_URL",
-                "STORAGE_POSTGRES_PRISMA_URL",
-              ]
-                .filter((key) => Boolean(process.env[key]?.trim()))
-                .join(", ") || "none"}
+              Database is not connected on this deploy. In Vercel → Settings → Environment
+              Variables, add the Neon Postgres connection string for{" "}
+              <strong>Production</strong>, then Redeploy. Use the Import catalog button below
+              once the database is connected.
             </p>
           </div>
         ) : null}
@@ -157,7 +143,7 @@ export default async function AdminDashboardPage() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Button asChild variant="outline">
-                    <Link href={`/admin/courses/${course.id}`}>Edit</Link>
+                    <Link href={`/infozub-admin/courses/${course.id}`}>Edit</Link>
                   </Button>
                   <form action={setPublished}>
                     <input type="hidden" name="id" value={course.id} />

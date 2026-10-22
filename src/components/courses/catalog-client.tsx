@@ -22,6 +22,8 @@ import {
   listCategories,
   listCourses,
   listDurations,
+  type CatalogCategory,
+  type CatalogCourse,
   type CourseSort,
   type PriceFilter,
 } from "@/data/catalog";
@@ -39,7 +41,13 @@ const sorts: { value: CourseSort; label: string }[] = [
   { value: "modules", label: "Most modules" },
 ];
 
-export function CatalogClient() {
+export function CatalogClient({
+  initialCourses,
+  initialCategories,
+}: {
+  initialCourses?: CatalogCourse[];
+  initialCategories?: CatalogCategory[];
+} = {}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -69,20 +77,24 @@ export function CatalogClient() {
     setSearchDraft(query);
   }, [query]);
 
-  const categories = listCategories();
-  const durations = listDurations();
-  const previewCourses = listCourses().slice(0, 5);
+  const allCourses = initialCourses ?? listCourses();
+  const categories = initialCategories ?? listCategories();
+  const durations = [...new Set(allCourses.map((course) => course.duration))].sort((a, b) =>
+    a.localeCompare(b),
+  );
+  const previewCourses = allCourses.slice(0, 5);
 
   const courses = useMemo(
     () =>
       filterCourses({
+        courses: allCourses,
         query,
         category,
         price,
         duration: durationFilter,
         sort,
       }),
-    [query, category, price, durationFilter, sort],
+    [allCourses, query, category, price, durationFilter, sort],
   );
 
   const activeFilterCount = countActiveFilters({
